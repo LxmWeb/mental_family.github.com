@@ -2,18 +2,24 @@
 2017.04.17 需求（某明记得加）<br />
 1、查询请求函数：<br />
 //查询病人对医生发起的请求<br />
-function select_relation($doctorId){<br />
-	$sql = "select * from relationship where doctor_id=$doctorId";<br />
+function select_relation($doctorId,$op){<br />
+	//查看是否有新的请求<br />
+	if($op == 0){<br />
+		$sql = "select * from relationship where doctor_id=$doctorId and is_valid=0";<br />
+	}<br />
+	else{<br />
+		$sql = "select * from relationship where doctor_id=$doctorId";<br />
+	}<br />
 	$result = get_datas($sql);<br />
 	return $result;<br />
 }<br />
-2、展示库内test<br />
+2、展示库内/医生test<br />
 function show_mental_tests($doctor_id,$tag){<br />
  	 if($tag == ""){<br />
- 		 $sql = "select * from questionnaire where questionnaireOwnerId='$doctor_id' and is_avaid=1";<br />
+ 		 $sql = "select * from test_info where test_source='$doctor_id'";<br />
  	 }<br />
  	 else {<br />
- 		 $sql = "select * from questionnaire where questionnaireOwnerId='$doctor_id' and questionnaireTag like '%$tag%' and is_avaid=1";<br />
+ 		 $sql = "select * from test_info where test_source='$doctor_id' and test_title like '%$tag%'";<br />
  	 }<br />
      $data = get_datas($sql);<br />
 	 return $data;<br />
