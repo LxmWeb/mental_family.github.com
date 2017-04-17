@@ -38,6 +38,25 @@ function show_mental_tests($doctor_id,$tag){<br />
 	 return $data;<br />
  }<br />
  3、upload量表的参数问题<br />
+ 参数为套题编号<br />
+ //查询量表信息<br />
+function select_testInfo($qnid){<br />
+	$sql = "select * from test_info where test_id = '$qnid'";<br />
+    return get_datas($sql);<br />
+}<br />
+function upload_test($doctorId,$qnid){<br />
+	//查询量表信息<br />
+    $testInfo = json_decode(select_testInfo($qnid),true);<br />
+    $type = $testInfo[0]['test_type'];<br />
+    $title = $testInfo[0]['test_title'];<br />
+    $index = $testInfo[0]['question_index'];<br />
+    $amount = $testInfo[0]['question_amount'];<br />
+    $before = $testInfo[0]['content_before'];<br />
+    $after = $testInfo[0]['content_after'];<br />
+    $sql = "insert into test_info (test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after) 
+        values('$type','$title','$doctorId',now(),'$index','$amount','$before','$after')";<br />
+    return insert_datas($sql);<br />
+}<br />
  
  <br />
 2017.04.17<br />
