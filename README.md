@@ -37,6 +37,8 @@ function show_mental_tests($doctor_id,$tag){<br />
      $data = get_datas($sql);<br />
 	 return $data;<br />
  }<br />
+ 3、upload量表的参数问题<br />
+ 
  <br />
 2017.04.17<br />
 1.对于以下几个函数增加了是否在数据库修改（包括插入，更新等）成功的返回值boolean，成功返回true，否则返回false
