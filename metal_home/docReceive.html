@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>docReceive</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <style>
+    .titlePart{
+    background-color: #2aabd2;
+    }
+    .titleText{
+    margin:2% 0;
+    font-size: 20px;
+    font-weight:bold;
+    color: #ffffff;
+    text-align: center;
+    }
+    .agree{
+        float:right;
+        margin-right: 10px;
+        width:80px;
+        border-radius: 5px;
+        background-color: #5cb85c;
+        border: 1px solid #5cb85c;
+        color: #ffffff;
+        margin-bottom: 2%;
+    }
+    .disagree{
+        float:right;
+        margin-right: 10px;
+        background-color: #ffffff;
+        width:80px;
+        border-radius: 5px;
+        border: 1px solid #5cb85c;
+        margin-bottom: 2%;
+    }
+    .qn{
+        margin-bottom: 2%;
+    }
+    </style>
+</head>
+<body>
+<div class="container-fluid titlePart">
+    <p class="titleText">信息</p>
+</div>
+<div class="container-fluid" style="margin: 2% 0;border-bottom: 1px solid #8d8d8d">
+    <div class="qn"></div>
+    <button class="agree">同意</button>
+    <button class="disagree">不同意</button>
+</div>
+</body>
+<script type="text/javascript">
+    var owner = "17816869761";
+    if(typeof GoEasy !== 'undefined'){
+        var goEasy = new GoEasy({
+            appkey: '8371993d-59bf-4ef0-96bd-9e9416853d13',
+            userId:"222",
+            username:"22",
+            onConnected:function(){
+                console.log("Connect to GoEasy success.");
+            } ,
+            onDisconnected:function(){
+                console.log("Disconnect to GoEasy server.");
+            } ,
+            onConnectFailed:function(error){
+                console.log("Connect to GoEasy failed, error code: "+ error.code+" Error message: "+ error.content);
+            }
+        });
+    }
+    subscribe();
+    function subscribe(){
+        goEasy.subscribe({
+            channel: owner,
+            onMessage: function(message){
+                alert(message.content);
+            },
+            onSuccess:function(){
+                console.log("Subscribe the Channel successfully.");
+            },
+            onFailed: function(error){
+                console.log("Subscribe the Channel failed, error code: "+ error.code + " error message: "+ error.content);
+            }
+        });
+    }
+    //推送消息
+    function publishMessage(paId, msg){
+        goEasy.publish({
+            channel: paId,
+            message: msg,
+            onSuccess:function(){
+                console.log("Publish message success.");
+            },
+            onFailed: function(error){
+                console.log("Publish message failed, error code: "+ error.code +" Error message: "+ error.content);
+            }
+        });
+    }
+
+    $(".agree").click(function(){
+        //publishMessage("doctorID", "医生已接受您的请求");
+//        $.ajax({
+//            url:'./php/docComment.php',
+//            type:'POST',
+//            dataType:'json',
+//            data: {doctorId:id,patientId:userId},//建立关系
+//            success:function(data) {
+//            }
+//        });
+    });
+
+    $(".disagree").click(function(){
+        //publishMessage("doctorID", "该医生的暂时无法为您服务");
+    });
+</script>
+</html>
