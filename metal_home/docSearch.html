@@ -118,7 +118,7 @@
         var value = $('#searchType option:selected') .val();
         console.log(str + " " +value);
         $.ajax({
-            url: 'php/doctor.php',
+            url: 'php/global.func.php',
             type: 'POST',
             dataType: 'json',
             data: {str:str,searchType:value},
