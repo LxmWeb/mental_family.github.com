@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医生简介</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="shortcut icon"  href="http://eduppp.cn/images/logo4.gif" />  
+    <link rel="apple-touch-icon" href="http://eduppp.cn/images/logo.gif" />
+   <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <!--<script type="text/javascript" src="pat.js"></script>-->
+    <style>
+        .titlePart{
+            background-color: #2aabd2;
+        }
+        .titleText{
+            margin:2% 0;
+            font-size: 20px;
+            font-weight:bold;
+            color: #ffffff;
+            text-align: center;
+        }
+        .bottomPart{
+            background-color: #dddddd;
+            border-top:1px solid #8c8c8c;
+            position: fixed;
+            bottom:0;
+            width:100%;
+        }
+        .reqBtn {
+            float: right;
+            /*margin-right: 10px;*/
+            width:100px;
+            height:30px;
+            font-size: 16px;
+            border: 1px solid #2aabd2;
+            background-color: #ffffff;
+            color: #2aabd2;
+        }
+        .msgBtn {
+            float: right;
+            /*margin-right: 10px;*/
+            width:100px;
+            height:30px;
+            font-size: 16px;
+            border: 1px solid #2aabd2;
+            background-color: #2aabd2;
+            color: #ffffff;
+        /*}*/
+        .userImg {
+            width:80px;
+            height:80px;
+            background-color: #1b6d85;
+            border-radius: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid titlePart">
+    <p class="titleText">个人简介</p>
+</div>
+<div class="container-fluid">
+    <div class="row" style="border-bottom: 1px solid #8c8c8c;">
+        <div class="col-xs-3" style="margin:2% 0;">
+            <img class="userImg"/>
+        </div>
+        <div class="col-xs-9">
+            <p class="doctorName" style="margin-left: 10px;font-size: 16px;font-weight: bold;margin-top: 20px;">null</p>
+            <p class="docterHospitol" style="margin-left: 10px;font-size: 14px;">null</p>
+        </div>
+    </div>
+    <div class="row" style="border-bottom: 1px solid #8c8c8c;">
+        <p style="margin: 2% 2% 2% 2%;font-size: 14px;display: inline-block;">擅长: </p>
+        <p class="doctorTags" style="margin: 2% 2% 2% 2%;font-size: 14px;display: inline-block;">null</p>
+    </div>
+    <div class="row" style="border-bottom: 1px solid #8c8c8c;">
+        <p style="margin: 2% 2% 2% 10%;font-size: 14px;">诊疗人数：null</p>
+        <p style="margin: 2% 2% 2% 10%;font-size: 14px;">当前随访数：null</p>
+    </div>
+    <div class="row" style="">
+        <p style="margin: 2% 2% 2% 2%;font-size: 14px;">患者评价</p>
+        <table class="commentList">
+            <!--<tr>-->
+                <!--<td>name</td>-->
+                <!--<td>bingzheng</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td><p>pinglun</p></td>-->
+            <!--</tr>-->
+        </table>
+    </div>
+</div>
+<div class="container-fluid bottomPart">
+    <div class="row">
+            <button class="reqBtn">请求随访</button>
+            <button class="msgBtn" onclick="">发送消息</button>
+    </div>
+</div>
+</body>
+<script>
+    docIntro();
+    function docIntro() {
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+        id = parseInt(id);
+        $.ajax({
+            url:'php/doctorIntro.php',
+            type:'POST',
+            dataType:'json',
+            data: {doctor_id:id},
+            success:function(data) {
+                alert(data);
+                var result = eval(data);
+                if(result.length>0){
+                    //将信息填入已经打完框架的简介页面
+                    //$(".userImg").src = result[0].header;
+                    $(".doctorName").text(result[0][0].doctor_name);
+                    $(".docterHospitol").text(result[1][0].hospital_name);
+                    $(".doctorTags").text(result[0][0].treatment);
+                }
+            }
+        });
+        var cell="";
+//        $.ajax({
+//            url:'php/docComment.php',
+//            type:'POST',
+//            dataType:'json',
+//            data: {doctorId:id},
+//            success:function(data) {
+//                var result = eval(data);
+//                if(result.length>0){
+//                    //将信息填入已经打完框架的简介页面
+//                    for(var i=0;i<result.length;i++){
+//                        cell+='<tr> <td>'+result[i].name+'</td> <td>'+result[i].pat+'</td> </tr> <tr> <td><p>'+result[i].comment+'</p></td> </tr>';
+//                    }
+//                    $(".commentList").html = cell;
+//                }
+//            }
+//        });
+    }
+    $('.reqBtn').click(function(){
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+        id = parseInt(id);
+        //publishMessage("17816869761","用户"+userId+"请求和你建立随访关系，是否同意？");
+        $.ajax({
+            url: 'php/requestRelation.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {doctor_id:id,patient_id:user_id},
+            success: function () {
+            }
+        });
+    });
+</script>
+</html>
