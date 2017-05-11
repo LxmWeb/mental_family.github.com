@@ -48,11 +48,12 @@ header('Access-Control-Allow-Origin:*');
 function user_register($json)
 {
     $userInfo = json_decode($json, true);
-    $username = check_username($userInfo['user_name'], 8, 16);
-    $pwd = check_password($userInfo['user_password'], 6);
+//     $username = check_username($userInfo['user_name'], 8, 16);
+//     $pwd = check_password($userInfo['user_password'], 6);
     $sql = "insert into user 
                 (user_id,user_password,user_name,user_status,register_time,last_login_time,last_login_ip)
-            values('{$userInfo['user_id']}','$pwd','$username','{$userInfo['user_status']}',now(),'','')";
+            values('{$userInfo['user_id']}','{$userInfo['user_password']}','{$userInfo['user_name']}',
+                   '{$userInfo['user_status']}',now(),'','')";
     // 病人
     if ($userInfo['status'] == 1) {
         insert_to_patient($userInfo);
@@ -71,10 +72,10 @@ function user_register($json)
  */
 function insert_to_patient($userInfo)
 {
-    $username = check_username($userInfo['user_name'], 8, 16);
+//     $username = check_username($userInfo['user_name'], 8, 16);
     $sql = "insert into patient
                 (patient_id,patient_name,sex,birthday,identity,main_suit,email)
-            values('{$userInfo['user_id']}','$username','{$userInfo['sex']}',
+            values('{$userInfo['user_id']}','{$userInfo['user_name']}','{$userInfo['sex']}',
                 '{$userInfo['birthday']}','{$userInfo['identify']}',
                 '{$userInfo['main_suit']}','{$userInfo['email']}'
             )";
@@ -88,10 +89,10 @@ function insert_to_patient($userInfo)
  */
 function insert_to_doctor($userInfo)
 {
-    $username = check_username($userInfo['user_name'], 8, 16);
+//     $username = check_username($userInfo['user_name'], 8, 16);
     $sql = "insert into doctor
                 (doctor_id,doctor_name,sex,birthday,identity,education,work_place,department,treatment,positional_title,email)
-            values('{$userInfo['user_id']}','$username','{$userInfo['sex']}',
+            values('{$userInfo['user_id']}','{$userInfo['user_name']}','{$userInfo['sex']}',
                 '{$userInfo['birthday']}','{$userInfo['identity']}','{$userInfo['education']}',
                 '{$userInfo['work_place']}','{$userInfo['department']}','{$userInfo['treatment']}',
                 '{$userInfo['positional_title']}','{$userInfo['email']}'
@@ -135,10 +136,12 @@ function reset_pwd($userId, $newPwd)
 
 /**
  * 功能：获取头像路径
+ * @return String 返回路径
  */
 function show_headImg($userId)
 {
     $sql = "select head_img from user where user_id=$userId";
-    return get_datas($sql, 1);
+    $url = get_datas($sql, 1);
+    return $url;
 }
 ?>
