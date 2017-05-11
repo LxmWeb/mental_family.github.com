@@ -53,16 +53,17 @@ function user_register($json)
     $sql = "insert into user 
                 (user_id,user_password,user_name,user_status,register_time,last_login_time,last_login_ip)
             values('{$userInfo['user_id']}','{$userInfo['user_password']}','{$userInfo['user_name']}',
-                   '{$userInfo['user_status']}',now(),'','')";
+                   '{$userInfo['user_status']}',now(),now(),'')";
+    $flag = insert_datas($sql);
     // 病人
-    if ($userInfo['status'] == 1) {
+    if ($userInfo['user_status'] == 1) {
         insert_to_patient($userInfo);
     }
     // 医生
-    else if ($userInfo['status'] == 2) {
+    else if ($userInfo['user_status'] == 2) {
         insert_to_doctor($userInfo);
     }
-    return insert_datas($sql);
+    return $flag;
 }
 
 /**
@@ -114,9 +115,8 @@ function user_login($userId, $pwd, $status)
             limit 1";
     if (get_row($sql) == null) {
         return false;
-    } else {
-        return true;
     }
+    return true;
 }
 
 /**
@@ -132,6 +132,19 @@ function reset_pwd($userId, $newPwd)
             set user_password='$newPwd' 
             where user_id='$userId'";
     return insert_datas($sql);
+}
+
+/**
+ * 功能：检查用户是否存在
+ * @param String $id
+ * @return boolean 返回是否存在，true为已存在
+ */
+function exist_user($id){
+    $sql = "select * from user where user_id=$id limit 1";
+    if (get_row($sql) == null) {
+        return false;
+    }
+    return true;
 }
 
 /**

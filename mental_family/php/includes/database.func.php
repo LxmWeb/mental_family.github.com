@@ -155,4 +155,12 @@ function insert_datas($sql){
     return sql_success();
 }
 
+/**
+ * 功能：获取查询记录的条数
+ * @param String $sql
+ */
+function get_result_rows($sql){
+    $result = query($sql);
+    return mysqli_num_rows($result);
+}
 ?>
