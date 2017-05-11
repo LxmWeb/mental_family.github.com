@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>Show List</title>
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	.titleBar{
+    		text-align: center;
+    		background-color: #eee;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		left: 0;
+            /*width: 100%;*/
+            right: 0;
+            z-index: 100;
+    	}
+    	.QNList{
+    		margin-top: 50px;
+    	}
+    	.QNList li{
+            list-style: none;
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+	<div class="container">
+		<div class="row titleBar">
+			<div class="col-xs-12">查看个人题库</div>
+		</div>
+	</div>
+	<div class="container mainView">
+		<div class="row">
+			<ul class="col-xs-12 QNList">
+				
+			</ul>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+var owner = "17816869761";
+QNList();
+// 显示量表列表
+function QNList(){
+    $.ajax({
+        url: 'php/qnlist.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {ownerId: owner},
+        success:function(data) {
+             alert(data);
+            // 对所获得的json数据进行解析
+            var result = eval(data);
+            var cell = "";
+            for(var i = 0; i < result.length; i++){
+                cell += "<li class='QNCell' id='qn" + result[i].questionnaireId +"'>" + result[i].questionnaireName +"</li>";
+            }
+            $(".QNList").html(cell);
+        }
+    });   
+}
+</script>
+</html>
