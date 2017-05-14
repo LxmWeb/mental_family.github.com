@@ -138,9 +138,9 @@ function array_to_string($array){
 }
 
 /**
- * 功能：将数组转化为字符串
- * @param int[] $array
- * @return String
+ * 功能：将字符串转化为数组
+ * @param String
+ * @return int[] $array
  */
 function string_to_array($string){
     $array = array();

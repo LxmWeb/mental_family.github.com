@@ -15,10 +15,11 @@ require ROOT_PATH.'includes/mentalTest.func.php';
 //$send_id = $_POST['send_id'];
 //$total_score = $_POST['score'];
 //$scores = $_POST['scores'];
+$recordId = "20170511231";
 $patient_id = "17816869781";
 $send_id = 1;
 $total_score = 112;
 $analysis = "111111";
 $scores = array(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4);
-finish_test($patient_id,$send_id,$total_score,$analysis,$scores)
+finish_test($recordId,$patient_id,$send_id,$total_score,$analysis,$scores);
 ?>

@@ -20,6 +20,8 @@ define('ROOT_PATH', substr(dirname(__FILE__), 0, -8));
 require ROOT_PATH.'includes/database.func.php';
 //引入全局功能
 require ROOT_PATH.'includes/global.func.php';
+//引入用户功能
+require ROOT_PATH.'includes/user.func.php';
 
 //定义数据库相关内容
 define('DB_HOST', '139.224.133.40');

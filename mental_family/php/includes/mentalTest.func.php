@@ -58,6 +58,31 @@ function patient_test($patientId){
 }
 
 /**
+ * 功能：显示某个测试题中的具体内容，包括标题，前言以及各个题目
+ * @param String $test_id
+ * @return json
+ */
+function show_test_details($test_id){
+    $sql = "select test_title,content_before,question_index,question_amount
+            from system_test
+            where test_id='$test_id'
+            limit 1";
+    $row = get_row($sql);
+//     $index = $row['question_index'];
+//     $amount = $row['question_amount'];
+    //使用属于同一试题的id来查找小题
+    $sql = "select * 
+            from test_content 
+            where test_id='$test_id'";
+    //使用开始下标和总题数查找小题 
+//             from test_content 
+//             where test_index between $index and $amount";
+    $content = get_datas($sql,2);
+//     $content = json_decode($content,true);
+    return $content;
+}
+
+/**
  * 功能：病人完成测试题后，修改数据库中的内容
  * @param String $patientId 病人id
  * @param int $sendId 发送测试题的编号
@@ -65,7 +90,7 @@ function patient_test($patientId){
  * @param String $analysis 测试后的分析
  * @param int[] $score 每小题的分数
  */
-function finish_test($patientId,$sendId,$totalScore,$analysis,$score){
+function finish_test($recordId,$patientId,$sendId,$totalScore,$analysis,$score){
     //数组转字符串
     $string = array_to_string($score);
     //获得数据
@@ -77,14 +102,19 @@ function finish_test($patientId,$sendId,$totalScore,$analysis,$score){
     $row = get_row($sql);
     //更新数据
     $sql = "update test_send 
-            set test_time=now(),user_grade=$totalScore,user_analysis='$analysis',finish_time=now(),score=''
+            set user_grade=$totalScore,user_analysis='$analysis',
+                finish_time=now(),score='$string'
             where send_id='$sendId'";
     query($sql);
     //插入到病人病历
     $sql = "insert into medical_record
-                (patient_id,patient_name,doctor_id,doctor_name,condition_summary,diagnosis_advice,test_id,test_title,test_grade,test_analysis)
+                (record_id,patient_id,patient_name,doctor_id,doctor_name,
+                 condition_summary,diagnosis_advice,test_id,test_title,
+                 test_grade,test_analysis)
             values
-                ('$patientId','{$row['patient_name']}','{$row['doctor_id']}','{$row['doctor_name']}','','',$sendId,'{$row['test_title']}',$totalScore,'$analysis')";
+                ('$recordId','$patientId','{$row['patient_name']}','{$row['doctor_id']}',
+                 '{$row['doctor_name']}','','',$sendId,'{$row['test_title']}',
+                 $totalScore,'$analysis')";
     query($sql);
 }
 
@@ -141,18 +171,18 @@ function show_patients($doctorId)
  * @param json $patientName
  * @param int $testId
  */
-function send_test($doctorId,$doctorName,$jsonId,$jsontName,$testId){
+function send_test($doctorId,$doctorName,$id,$name,$testId){
     //加了true才会返回数组，否则返回对象
-    $patientId = json_decode($jsonId,true);
-    $patientName = json_decode($jsontName,true);
+    $patientId = json_decode($id,true);
+    $patientName = json_decode($name,true);
     $sql = "select test_title from test_info where test_id = $testId";
     $row = get_row($sql);
     $testTitle = $row['test_title'];
     foreach($patientId as $key => $value){
         $sql = "insert into test_send 
-                (patient_id,patient_name,doctor_name,test_id,test_name,test_time,user_grade,user_analysis,send_time,finish_time)
-                values('$value','$patientName[$key]','$doctorName',$testId,'$testTitle','',null,'',now(),''";
-        query($sql);
+                (patient_id,patient_name,doctor_name,test_id,test_name,user_grade,user_analysis,send_time,finish_time)
+                values('$value','$patientName[$key]','$doctorName',$testId,'$testTitle','',null,now(),''";
+        query($sql); 
     }
     /*需要对每一个病人是否发送成功进行判断？*/
 }

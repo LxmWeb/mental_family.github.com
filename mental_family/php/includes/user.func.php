@@ -111,7 +111,7 @@ function insert_to_doctor($userInfo)
 function user_login($userId, $pwd, $status)
 {
     $sql = "select * from user 
-            where user_id='$userId' and user_password='$pwd' and user_status='$status'
+            where user_id='$userId' and user_password='$pwd' and user_status=$status
             limit 1";
     if (get_row($sql) == null) {
         return false;
@@ -140,7 +140,7 @@ function reset_pwd($userId, $newPwd)
  * @return boolean 返回是否存在，true为已存在
  */
 function exist_user($id){
-    $sql = "select * from user where user_id=$id limit 1";
+    $sql = "select * from user where user_id='$id' limit 1";
     if (get_row($sql) == null) {
         return false;
     }
