@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Test Result</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	header{
+    		background-color: #63B8FF;
+    		color: #fff;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		width: 100%;
+    	}
+    	.testListView{
+    		margin: 50px auto;
+    	}
+    	.testDetails{
+    		padding: 10px;
+    		border-bottom: 1px solid #f1f1f1;
+    	}
+    	.testDetails div{
+    		display: inline-block;
+    	}
+    	.testDetails div:nth-child(2){
+    		margin-left: 10px;
+    	}
+    	.testDetails div:nth-child(3){
+    		float: right;
+    	}
+    	.unfinished{
+    		width:10px;
+    		height: 10px;
+    		background-color: red;
+    		border-radius: 5px;
+    		margin: 0;
+    	}
+    	.finished{
+    		width:10px;
+    		height: 10px;
+    		background-color: greenyellow;
+    		border-radius: 5px;
+    		margin: 0;
+    	}
+    	.tipMark{
+    		padding: 2px;
+    		border: 1px solid #FFA500;
+    		width: 70px;
+    		border-radius: 12px;
+    		text-align: center;
+    		color: #FFA500;
+    	}
+    	.testScore{
+    		padding: 2px;
+    		border: 1px solid green;
+    		width: 70px;
+    		border-radius: 12px;
+    		text-align: center;
+    		color: green;
+    	}
+    	.right{
+    		float: right;
+    	}
+    </style>
+</head>
+<body>
+	<header class="text-center">患者量表</header>
+	<div class="container">
+		<div class="row testListView">
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+if(localStorage.doctorId){
+	var doctorId = localStorage.doctorId;
+	//获得当前查看用户id
+	var l = location.search.substring(1);
+	var pairs=l.split("=");
+	var id = pairs[1];
+	console.log(id);
+	patTestList();
+//获取当前病患的所有量表
+function patTestList(){
+	$.ajax({
+		url: './php/patTestList.php',
+        type: 'POST',
+        dataType: 'json',
+		data:{id:id},
+		success:function(data){
+			var res = eval(data);
+			if(res){
+				var l = "";
+				for(var i = 0; i < res.length; i++){
+					l += '<div class="col-xs-12 testDetails">'
+					var finish = res[i].ifFinish;
+					//已完成，显示得分
+					var score;
+					if(finish == "1"){
+						score = res[i].testscore;
+						l += ('<div class="finished"></div><div class="testTitle">'+res[i].questionnaireName+'</div><div class="testScore">得分'+score+'</div></div>');
+//						console.log(l);
+					}
+					else{
+						l += ('<div class="unfinished"></div><div class="testTitle">'+res[i].questionnaireName+'</div><div class="tipMark">提醒完成</div></div>');
+					}
+				}
+				$('.testListView').html(l);
+			}
+		},
+		error:function(){
+				$('.testListView').html('<div class="text-center">暂无量表，向其推送</div>');
+		}
+	});
+}
+}
+</script>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Test Result</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	header{
+    		background-color: #63B8FF;
+    		color: #fff;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		width: 100%;
+    	}
+    	.patientView{
+    		margin: 50px auto;
+    	}
+    	.PaList li{
+            list-style: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #000;
+        }
+        .patTest{
+        	float: right;
+        }
+    </style>
+</head>
+<body>
+	<header class="text-center">患者列表</header>
+	<div class="container patientView">
+		<div class="row">
+      		<ul class="PaList col-xs-12">
+      		</ul>
+    	</div>
+	</div>
+</body>
+<script type="text/javascript">
+var owner = "17816869761";
+PaList();
+	//显示病患列表
+function PaList(){
+    $.ajax({
+		url: './php/mentalTest.php',
+//		url:'http://112.124.61.5/metal/mentalTest.php',
+//		url:'http://httishere.applinzi.com/php/test.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {ownerId: owner},
+        success:function(data) {
+        	console.log(data);
+            var result = eval(data);
+            var cell = "";
+            for(var i = 0; i < result.length; i++){
+            	var btn = "<input type='button' class='btn btn-primary btn-sm patTest' value='查看他的量表' id='patTestBtn'/>";
+                cell += "<li class='PaCell' id='pa" + result[i].patient_id +"'>" + result[i].patient_name + btn + "</li>";
+            }
+            $(".PaList").html(cell);
+            $(".patTest").bind("click",function(){
+				var i = $(".patTest").index(this);
+				var id = $(".PaCell").eq(i).attr('id');
+        		id = id.substr(2, id.length-2);
+				console.log(id);	
+				window.location.href = "getTestResult.html?id=" + id;
+			});
+        }
+    });   
+}
+</script>
+</html>

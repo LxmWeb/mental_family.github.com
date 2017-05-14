@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style type="text/css"></style>
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>心理家--医生版</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/firstpage.css">
+    <style type="text/css">
+    	.docT input{
+			width: 80%;
+			margin: 15px auto;
+		}
+    </style>
+</head>
+<body>
+	<div class="container nav-view">
+		<div class="row nav-header-bar">
+			<div class="title">我的随访</div>
+		</div>
+		<div class="msgTip">消息</div>
+		<div class="row nav-img-box">
+			<img src="./img/first.jpg" id="firstImg">
+		</div>
+		<!-- 搜索栏 -->
+		<div class="row nav-search-bar text-center">
+		<!-- <form post="php\firstSearch.php" method="POST"> -->
+		<a href="firstSearch.html" class="col-xs-12">
+			<input type="text" name="searchInput" id="searchInput" placeholder="症状，疾病，药品">
+		</a>
+		<!-- </form> -->
+		</div>
+		<div class="row text-center docT">
+			<input type="button" name="test" id="test" value="量表" class="btn btn-primary" onclick="window.location.href = 'docT.html'"/>
+		</div>
+		<!-- 各功能标签 -->
+		<!--<div class="row rowM">
+			<a href="poMessage.html">
+			<div class="col-xs-4 funcM" style="margin-left: 12%;">
+				<img src="./img/po.png" id="poMessage">
+			</div>
+			</a>
+			<div class="col-xs-4 funcM">
+				<img src="./img/data.png" id="poMessage">
+			</div>
+			<div class="col-xs-4 funcM">
+				<img src="./img/phistory.png" id="poMessage">
+			</div>
+		</div>
+		<div class="row  rowM">
+			<div class="col-xs-4 funcM" style="margin-left: 12%;">
+				<img src="./img/track.png" id="poMessage">
+			</div>
+			<div class="col-xs-4 funcM">
+				<img src="./img/group.png" id="poMessage">
+			</div>
+			<div class="col-xs-4 funcM">
+				<img src="./img/diary.png" id="poMessage">
+			</div>
+		</div>-->
+		<!-- 导航栏 -->
+		<!--<div class="row nav-footer-bar">
+		</div>-->
+	</div>
+</body>
+<script type="text/javascript">
+	localStorage['doctorId'] = "17816869761";
+	var doctorId = localStorage.doctorId;
+	console.log(doctorId);
+	getMsg();
+	//消息
+	function getMsg(){
+		$.ajax({
+			type:"post",
+			url:"./php/getMsg.php",
+			dataType:'json',
+			data:{doctor_id:doctorId,op:1,p:0},
+			success:function(data){
+				var res = eval(data);
+				if(res){
+					var num = res.length;
+					console.log(num);
+					var l = '<div class="tipMark"></div>';
+					$(".msgTip").after(l);
+				}
+			},
+			error:function(){
+				console.log("error");
+			}
+		});
+	}
+	
+	//查看消息
+	$(".msgTip").click(function(){
+		window.location.href = "myMsg.html";
+	});
+</script>
+</html>

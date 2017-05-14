@@ -1,0 +1,32 @@
+body{
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+.nav-header-bar{
+	background-color: #63B8FF;
+	width: 100%;
+	height: 44px; 
+	text-align: center;
+	vertical-align: baseline;
+	position: fixed;
+}
+.title{
+	padding: 15px;
+	font-size: 20px;
+	background-color: #63B8FF;
+	color: #ffffff;
+}
+.poM{
+	width: 60px;
+	height: 60px;
+	position: fixed;
+	bottom: 20px;
+	border-radius: 30px;
+	left: 50%;
+	margin-left: -30px;
+	text-align: center;
+}
+#poMark{
+	width: 100%;
+}

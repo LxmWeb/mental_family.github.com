@@ -1,0 +1,27 @@
+img{
+	width: 100%;
+}
+*{
+	margin: 0;
+	padding: 0;
+}
+.doctorList{
+	width: 100%;
+}
+.doctorList li{
+	list-style: none;
+	border: 1px solid #000;
+	padding: 10px;
+	margin: 5px auto;
+	cursor: pointer;
+	z-index: 100;
+}
+.img, .cotent{
+	display: inline-block;
+}
+.img{
+	width: 20%;
+}
+.content{
+	width: 60%;
+}

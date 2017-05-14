@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>docT</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	.func,.testResult{
+    		margin: 10px auto;
+    		width: 100%;
+    	}
+    	.func div{
+    		border: 1px solid #000;
+    		padding: 10px;
+    		text-align: center;
+    		cursor: pointer;
+    	}
+    	/*.requestMsg:after{
+    		content: "";
+    		width: 15px;
+    		height: 15px;
+    		background-color: red;
+    		border-radius: 7.5px;
+    		position: relative;
+    		right: 50px;
+    		top: -15px;
+    	}*/
+    </style>
+</head>
+<body>
+	<div class="container">
+		<div class="row func">
+			<div class="col-xs-4 btn btn-primary">添加量表</div>
+			<div class="col-xs-4 btn btn-primary">查看题库</div>
+			<div class="col-xs-4 btn btn-primary">推送量表</div>
+		</div>
+		<div class="row testResult btn btn-warning">查看已推送量表</div>
+		<div class="tip"></div>
+	</div>
+</body>
+<script type="text/javascript">
+	localStorage['doctorId'] = '17816869761';
+	var doctorId = localStorage.doctorId;
+	$('.func').children().eq(0).click(function(event) {
+		window.location.href = "uploadTest.html";
+	});
+	$('.func').children().eq(1).click(function(event) {
+		window.location.href = "showDocQnList.html";
+	});
+	$('.func').children().eq(2).click(function(event) {
+		window.location.href = "docPush.html";
+	});
+	$(".testResult").click(function(){
+		window.location.href = "patientList.html";
+	});
+//	$.ajax({
+//		type:"post",
+//		url:"http://httishere.applinzi.com/php/test.php",
+//		dataType:'text',
+//		data:{ownerId:'17816869761',tag:""},
+//		success:function(data){
+////			console.log(data);
+//		},
+//		error:function(){
+//			console.log('123');
+//		}
+//	});
+	getMsg();
+	//消息
+	function getMsg(){
+		$.ajax({
+			type:"post",
+			url:"./php/getMsg.php",
+			dataType:'json',
+			data:{doctor_id:doctorId},
+			success:function(data){
+				var res = eval(data);
+				if(res){
+					var num = res.length;
+				}
+			}
+		});
+	}
+</script>
+</html>

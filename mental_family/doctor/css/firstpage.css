@@ -1,0 +1,86 @@
+/*body{
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}*/
+*{
+	margin: 0;
+	padding: 0;
+}
+.nav-view{
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+.nav-header-bar{
+	background-color: #63B8FF;
+	width: 100%;
+	height: 50px; 
+	text-align: center;
+	vertical-align: baseline;
+	margin: 0;
+}	
+.title{
+	padding: 15px;
+	background-color: #63B8FF;
+	color: #ffffff;
+}
+.msgTip{
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	color: #fff;
+}
+.tipMark{
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	position: absolute;
+	top: 13px;
+	right: 5px;
+	background-color: red;
+}
+.nav-img-box{
+	height: 250px;
+	height: 25%;
+	margin-top: 0;
+}
+#firstImg,#poMessage{
+	width: 100%;
+	height: 100%;
+}
+.rowM{
+	margin-top: 25px;
+}
+.funcM{
+	background-color: #63B8FF;
+	border-radius: 10px;
+	width: 20%;
+	display: inline-block;
+	margin-right: 5%;
+}
+.nav-search-bar{
+	margin-top: 10px;
+}
+#searchInput{
+	height: 30px;
+	width: 90%;
+	background-color: #eeeeee;
+	outline: none;
+	border: none;
+	padding-left: 10px;
+	color: #aaa;
+	border-radius: 10px;
+	
+}
+.nav-footer-bar{
+	position: fixed;
+	bottom: 0;
+	/*width: 100%;*/
+	height: 50px;
+	border-top: 1px solid #eeeeee;
+}
+.docT input{
+	width: 80%;
+	margin: 15px auto;
+}

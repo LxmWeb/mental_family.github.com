@@ -1,0 +1,9 @@
+set character_set_database=utf8;
+
+cp -r /usr/share/doc/MySQL-server-5.5.34/my-large.cnf /etc/my.cnf
+
+
+#default-character-set=utf8
+#
+default-character-set=utf8
+#init_connect='set names utf8'

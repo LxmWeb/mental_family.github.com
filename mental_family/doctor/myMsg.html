@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style type="text/css"></style>
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>消息</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	header{
+    		background-color: #63B8FF;
+    		color: #fff;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		width: 100%;
+    	}
+    	.msgView{
+    		margin: 50px auto;
+    	}
+    	.msgListView{
+    		border-bottom: 1px solid #eee;
+    		padding: 10px;
+    	}
+    	.msgListView div:nth-child(3){
+    		font-size: 12px;
+    		color: #ddd;
+    	}
+    	.msgListView input{
+    		float: right;
+    	}
+    </style>
+</head>
+<body>
+	<header class="text-center">消息</header>
+	<div class="container msgView">
+		<!--<div class="row msgListView">
+			<div class="col-xs-10">名字</div>
+			<input class="col-xs-2 btn btn-primary btn-sm" value="接受"></input>
+			<div class="col-xs-10">请求</div>
+		</div>-->
+	</div>
+</body>
+<script type="text/javascript">
+	var doctorId = localStorage.doctorId;
+	getMsg();
+	function getMsg(){
+		$.ajax({
+			type:"post",
+			url:"./php/getMsg.php",
+			data:{doctor_id:doctorId,op:1,p:1},
+			dataType:"json",
+			success:function(data){
+				var l ="";
+				var res = eval(data);
+				if(res){
+					for(var i = 0; i < res.length; i++){
+						var name = res[i].patient_name;
+						var id = res[i].patient_id;
+						if(res[i].is_valid == 0){
+							l += '<div class="row msgListView" id="'+id+'"><div class="col-xs-9">'+name+'</div><div class="col-xs-3 btn btn-primary btn-sm">接受</div><div class="col-xs-9">请求您成为他的医生</div></div>';
+						}
+						else{
+							l += '<div class="row msgListView" id="'+id+'"><div class="col-xs-9">'+name+'</div><div class="col-xs-3">已添加</div><div class="col-xs-9">请求您成为他的医生</div></div>';
+						}
+						}
+					$('.msgView').html(l);
+					//给按钮绑定事件
+					$(".btn").bind('click',function(){
+						var i = $(".btn").index(this);
+						console.log($(".msgListView").eq(i).attr("id"));
+						$('.btn').eq(i).text("已添加");
+						$('.btn').eq(i).removeClass("btn-primary btn-sm btn");
+						addMyPatient(doctorId, $(".msgListView").eq(i).attr("id"));						
+					});
+				}
+			}
+		});
+	}
+	function addMyPatient(doctorId, id){
+		$.ajax({
+			type:"post",
+			url:"./php/getMsg.php",
+			data:{doctor_id:doctorId,patient_id:id,op:2},
+			success:function(data){
+				alert("添加成功！");
+			}
+		});
+	}
+</script>
+</html>

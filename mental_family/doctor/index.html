@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>首页</title>
+	<!-- <link rel="stylesheet" href="bootstrap\css\bootstrap.min.css"> -->
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<!-- <script type="text/javascript" src="bootstrap\js\bootstrap.min.js"></script> -->
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style>
+		*{
+		margin: 0;
+		padding: 0;
+		}
+		.test{
+			margin: 10px auto;
+		}
+		.test div{
+			border: 1px solid #000;
+			text-align: center;
+			padding: 15px;
+			cursor: pointer;
+		}
+		.questionList{
+			margin-top: 10px;
+		}
+		.questionList li{
+			list-style: none;
+			margin-top: 10px; 
+			margin-bottom: 10px; 
+		}
+		input{
+			width: 100%;
+		}
+		.addBtn{
+			margin: 10px auto;
+		}
+		.addBtn div{
+			border: 1px solid #000;
+			text-align: center;
+			padding: 10px;
+			text-align: center;
+		}
+		#next, #finish{
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row test">
+			<div class="col-xs-6 addTest">补充题库</div>
+			<div class="col-xs-6 checkTest">查看题库</div>
+		</div>
+		<div class="row addView">
+		<div class="col-xs-12">
+			问卷题目
+		</div>
+		<div class="col-xs-12">
+			<input type="text" id="QNTitle">
+		</div>
+		<div class="col-xs-12">
+			问卷关键词
+		</div>
+		<div class="col-xs-12">
+			<input type="text" id="QNTag">
+		</div>
+		<ul class="questionList">
+			<li>
+			<div class="col-xs-3">
+				测试题目:
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QTitle">
+			</div>
+			<!-- 选项 -->
+			<div class="col-xs-3">
+				选项1：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOption">
+			</div>
+			<div class="col-xs-3">
+				分值：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOScore">
+			</div>
+			<div class="col-xs-3">
+				选项2：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOption">
+			</div>
+			<div class="col-xs-3">
+				分值：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOScore">
+			</div>
+			<div class="col-xs-3">
+				选项3：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOption">
+			</div>
+			<div class="col-xs-3">
+				分值：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOScore">
+			</div>
+			<div class="col-xs-3">
+				选项4：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOption">
+			</div>
+			<div class="col-xs-3">
+				分值：
+			</div>
+			<div class="col-xs-9">
+				<input type="text" class="QOScore">
+			</div>
+			</li>
+		</ul>
+		</div>
+		<div class="row addBtn">
+			<div class="col-xs-6" id="next">
+				下一题
+			</div>
+			<div class="col-xs-6" id="finish">
+				完成
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var questionnaireNT = [];
+    var questionnaire = [];
+    var count = 0;
+    var c = 0;
+    // 点击下一题增加一题
+	var addLi = "<li><div class='col-xs-3'>测试题目:</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QTitle'></div>" + 
+			    "<div class='col-xs-3'>选项1：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOption'></div>" + 
+			    "<div class='col-xs-3'>分值：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOScore'></div>" + 
+			    "<div class='col-xs-3'>选项2：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOption'></div>" + 
+			    "<div class='col-xs-3'>分值：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOScore'></div>" + 
+			    "<div class='col-xs-3'>选项3：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOption'></div>" + 
+			    "<div class='col-xs-3'>分值：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOScore'></div>" + 
+			    "<div class='col-xs-3'>选项4：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOption'></div>" + 
+			    "<div class='col-xs-3'>分值：</div>" + 
+			    "<div class='col-xs-9'><input type='text' class='QOScore'></div></li>";
+    
+	$(addInfo);
+	function addInfo(){
+		$("#next").click(function() {
+			count++;
+			$('.questionList').append(addLi);
+		});
+	}
+	$(finishTest);
+	function finishTest(){
+		$('#finish').click(function() {
+			// 问卷信息
+			var nt = {};
+			nt.title = $("#QNTitle").val();
+			nt.tag = $("#QNTag").val();
+			questionnaireNT.push(nt);
+			// alert(JSON.stringify(nt));
+			// 题目信息
+			for(var i = 0; i <= count; i++){
+			var question = {};
+			question.title = $(".QTitle").eq(i).val();
+			question.option1 = $(".QOption").eq(i * 4).val();
+			question.s1 = $(".QOScore").eq(i * 4).val();
+			question.option2 = $(".QOption").eq(i * 4 + 1).val();
+			question.s2 = $(".QOScore").eq(i * 4 + 1).val();
+			question.option3 = $(".QOption").eq(i * 4 + 2).val();
+			question.s3 = $(".QOScore").eq(i * 4 + 2).val();
+			question.option4 = $(".QOption").eq(i * 4 + 3).val();
+			question.s4 = $(".QOScore").eq(i * 4 + 3).val();
+			questionnaire.push(question);
+			}
+			// alert(JSON.stringify(questionnaire));
+
+			$.ajax({
+				url: 'php\\addTest.php',
+				type: 'POST',
+				dataType: 'text',
+				data: {q: JSON.stringify(questionnaire),
+					   n: nt},
+				success: function(data){
+					alert("success!");
+					alert(data);
+					location.reload();
+
+				}
+			});		
+		// }
+		});
+	}
+
+</script>
+</html>

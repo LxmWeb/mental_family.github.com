@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <title>mainTest</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap-slider/9.7.2/css/bootstrap-slider.css">
+    <link href="//cdn.bootcss.com/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/bootstrap-slider/9.7.2/bootstrap-slider.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap-slider/9.7.2/bootstrap-slider.min.js"></script>
+    <!--<script type="text/javascript" src="heartText.js"></script>-->
+    <style>
+        .headline{
+            background-color: #2aabd2;
+            color: #ffffff;
+            font-size:20px;
+            font-weight:bold;
+            text-align: center;
+        }
+        .questionnaireInto {
+            margin-top: 2%;
+            border: 2px dashed #8d8d8d;
+        }
+        .question {
+            margin: 2% auto 0 2%;
+            font-size: 16px;
+        }
+        .radioBtn {
+            margin: 0 auto 2% 2%;
+            font-size: 14px;
+        }
+        .submit {
+            width:100px;
+            margin-top: 2%;
+            float: right;
+            margin-right: 5%;
+        }
+
+        .slider-handle.custom {
+            background: transparent none;
+            /* You can customize the handle and set a background image */
+        }
+
+        /* Or display content like unicode characters or fontawesome icons */
+        .slider-handle.custom::before {
+            line-height: 20px;
+            font-size: 20px;
+            content: '\2605'; /*unicode star character*/
+            color: #2aabd2;
+        }
+        .slider {
+            margin-left:2%;
+        }
+        /*#ex11Slider .slider-selection {*/
+            /*background: #BABABA;*/
+        /*}*/
+        .CurrentSliderValLabel {
+            margin-left:2%;
+        }
+    </style>
+    <script src="heartText.js"></script>
+</head>
+<body>
+<div class="container headline">
+    心理健康调研
+</div>
+<div class="container questionnaireInto">
+    <!--<div class="row testLine">-->
+            <!--<p class="question">Q：请评价您此刻的心情</p>-->
+             <!--<input class="ss"  id="ex11" data-slider-id='ex11Slider' type="text" data-slider-handle="custom"/>-->
+             <!--<span class="CurrentSliderValLabel">当前值: <span id="SliderVal">4</span></span>-->
+    <!--</div>-->
+</div>
+<div class="container bottom">
+    <button class="submit">提交</button>
+</div>
+</body>
+<script>
+    var code1cell;
+    var e_id=[],s_id=[],ans=[],choose=[];
+    intoTest();
+    function intoTest(){
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var showvar = getval.split("=")[1];
+        //alert(showvar);
+        $.ajax({
+            url: 'php/showQues.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {push_id: showvar},
+            success:function(data) {
+                alert(data);
+                // 对所获得的json数据进行解析
+                var result = eval(data);
+                for(var i=0;i<result.length;i++){
+                    code1cell+='<div class="row testLine"><p class="question">'+result[i].Question+'</p>';
+                    code1cell+='<input class="ss" id="ex'+i+'" type="text" data-slider-handle="custom"/> <span class="CurrentSliderValLabel">当前值: <p style="display: inline-block" class="s" id="sliderVal'+i+'">'+result[i].QuestionDegree+'</p></span>';
+                    code1cell+='</div>';
+                    e_id[i]="#ex"+i;
+                    s_id[i]="#sliderVal"+i;
+                    ans[i]=result[i].QuestionDegree;
+;                }
+                $(".questionnaireInto").html(code1cell);
+
+                for(var i=0;i<e_id.length;i++){
+                    $(e_id[i]).slider({step: 1, min: 1, max: ans[i]});
+                }
+                $(".ss").on("slide", function(sliderValue) {
+                    $(".s").eq($(".ss").index(this)).text(sliderValue.value);
+                });
+            }
+        });
+    }
+
+    $(".submit").click(function () {
+        var sum=0;
+        for(var i=0;i<e_id.length;i++){
+            sum+=parseInt($(".s").eq(i).text());
+        }
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var showvar = getval.split("=")[1];
+        alert(showvar+" "+sum);
+        $.ajax({
+            url: 'php/sendResult.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {push_id: showvar,score:sum},
+            success:function(data) {
+                console.log("成绩已正确提交，医生会尽快返回结果");
+            }
+        });
+        var url = "patReceive.html?index=1";
+        window.open(url);
+    });
+</script>
+</html>

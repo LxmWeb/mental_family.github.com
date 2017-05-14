@@ -1,0 +1,32 @@
+header{
+    background-color: #63B8FF;
+    color: #fff;
+    height: 50px;
+    line-height: 50px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+.container{
+	margin-top: 50px;
+}
+.right_label{
+	color: #fff;
+    height: 50px;
+    line-height: 50px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding-right: 15px;
+}
+.left_label{
+    height: 50px;
+    line-height: 50px;
+    position: fixed;
+    top: 0;
+    z-index: 101;
+    color: #fff;
+    padding-left: 15px;
+}

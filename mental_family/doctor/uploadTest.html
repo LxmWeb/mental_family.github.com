@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Upload Test</title>
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    	/**{
+    		margin: 0;
+    		padding: 0;
+    	}*/
+    	.return{
+    		text-align: left;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		left: 0;
+            /*width: 100%;*/
+            right: 0;
+            z-index: 101;
+            color: #fff;
+            padding-left: 25px;
+    	}
+    	.titleBar{
+    		text-align: center;
+    		background-color: #63B8FF;
+    		height: 50px;
+    		line-height: 50px;
+    		position: fixed;
+    		top: 0;
+    		left: 0;
+            /*width: 100%;*/
+            right: 0;
+            z-index: 100;
+            color: #fff;
+    	}
+    	.addBar{
+    		text-align: center;
+    		margin-top: 50px;
+    	}
+    	.addBar div{
+    		padding: 20px;
+    		border-top: 2px solid #ccc;
+    		border-bottom: 2px solid #ccc;
+    		cursor: pointer;
+    		margin-bottom: 10px;
+    	}
+    	.testList{
+    		background-color: #fff;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 50px;
+            -webkit-transform: scale(0.0);
+            -ms-transform: scale(0.0);
+            -o-transform: scale(0.0);
+            transform: scale(0.0);
+            -webkit-transition: all 0.5s;
+            -o-transition: all 0.5s;
+            transition: all 0.5s;
+    	}
+    	#searchTag{
+    		width: 100%;
+    		border-radius: 5px;
+    		padding: 2px 5px 2px 5px;
+    		outline: none;
+    		border: 2px solid #ccc;
+    		margin-top: 10px;
+    	}
+    	.QNList li{
+            list-style: none;
+            margin-top: 10px;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #ccc;
+        }
+        .checkOn, .pcheckOn{
+            background-color: pink;
+        }
+        #QNBtn{
+        	width: 100%;
+    		padding: 2px 5px 2px 5px;
+    		outline: 0;
+        }
+    </style>
+</head>
+<body>
+	<div class="container">
+		<div class="row return" onclick="history.back()">返回</div>
+		<div class="row titleBar">
+			<div class="col-xs-12">添加调查表</div>
+		</div>
+	</div>
+	<div class="container mainView">
+		<div class="row addBar">
+			<div class="col-xs-12">
+				从模板库中添加
+			</div>
+			<div class="col-xs-12">
+				拍照上传
+			</div>
+		</div>
+	</div>
+	<div class="container testList">
+		<div class="row">
+			<div class="col-xs-12">
+				<input type="text" placeholder="搜索关键词" id="searchTag" class="form-control">
+			</div>
+      		<ul class="QNList col-xs-12">
+      		</ul>
+      		<div class="col-xs-12">
+        		<input type="button" value="添加" id="QNBtn" class="btn btn-primary">
+      		</div>
+    	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var owner = localStorage['doctorId'];
+	console.log(owner);
+	QNList("");
+	var qnResult = [];
+	var qn = [];
+	//从模板库添加
+	$('.addBar').children().eq(0).click(function() {
+    $('.testList').css('transform', 'scale(1.0)');
+	});
+	$('.addBar').children().eq(1).click(function() {
+    alert("该功能暂未实现");
+	});
+	// 显示量表列表
+function QNList(tag){
+    $.ajax({
+        url: './php/testList.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {ownerId: "admin",
+    		   Tag: tag
+    		  },
+        success:function(data) {
+            // 对所获得的json数据进行解析
+            var result = eval(data);
+            var cell = "";
+            for(var i = 0; i < result.length; i++){
+                cell += "<li class='QNCell' id='qn" + result[i].test_id +"'>" + result[i].test_title +"</li>";
+            }
+            $(".QNList").html(cell);
+        }
+    });   
+}
+// 对动态添加的li元素进行事件绑定
+$('.QNList').on("click","li",function() {
+        if($(this).attr('class') == "checkOn")
+            $(this).toggleClass('checkOff');
+        else
+            $(this).toggleClass('checkOn');
+});
+//选择确定按钮
+$('#QNBtn').click(function() {
+    qn = [];
+    for(var i = 0; i < $('.checkOn').length; i++){
+        var id = $('.checkOn').eq(i).attr('id');
+        var l = id.length;
+        id = id.substr(2, l-2);
+        qn.push(id);
+    }
+    if(qn.length != 0)
+    	alert("添加成功！");
+    $("#searchTag").val("");
+    $('.testList').css('transform', 'scale(0.0)');
+    $.ajax({
+    	url: './php/addTFromBase.php',
+    	type: 'POST',
+    	dataType: 'text',
+    	data: {ownerId: owner,
+    		   QN: qn
+    		  },
+        success: function(data){
+//      	alert(data);
+        	QNList("");
+        }
+    });
+});
+//搜索关键词
+$('#searchTag').bind('keypress', function(event) {
+	if (event.keyCode == "13") {
+		var tag = $("#searchTag").val();
+//		 alert(tag);
+		QNList(tag);
+	}
+});
+</script>
+</html>

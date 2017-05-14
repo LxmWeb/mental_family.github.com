@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,height=device-height,maximum-scale=1.0,user-scalable=no">
+		<title>患者量表结果</title>
+		<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    	<script src="https://code.jquery.com/jquery.js"></script>
+   		<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    	<style type="text/css">
+    		*{list-style: none; margin: 0; padding: 0;}
+    		.nav-bar{color: #FFFFFF; background-color: #337ab7; height: 40px; line-height: 40px; position: fixed;width: 100%;}
+    		.resultView{margin-top: 50px;}
+    		.PaCell, .ptCell{width: 100%;}
+    		
+    	</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row nav-bar text-center">患者量表结果</div>
+			<div class="row resultView">
+				<ul class="PaList">
+					<li></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	var patient = [];
+	PaList("17816869761");
+function PaList(owner){
+    $.ajax({
+		url: './php/mentalTest.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {ownerId: owner},
+        success:function(data) {
+            var result = eval(data);
+            var cell = "";
+            for(var i = 0; i < result.length; i++){
+            	patient.push(result[i].patient_id);
+                cell += "<li class='PaCell btn btn-warning' id='pa" + result[i].patient_id +"'>" + result[i].patient_name +"</li><li class='ptDetails'></li>";
+            }
+            $(".PaList").html(cell);
+        }
+    });   
+}
+$(".PaList").delegate(".PaCell","click", function(){
+	//获得当前患者的id
+	var id = $(this).attr('id').substr(2);
+	var index = $(".PaCell").index(this);
+//	alert(id + index);
+	//展开列表
+	PushList(id, index);
+	
+});
+function PushList(id, index){
+	var li = "pa" + id;
+	$.ajax({
+		type:"post",
+		url:"php/pushList.php",
+		dataType:"json",
+		data:{doc:"17816869761",id:id},
+		success:function(data){
+			var result = eval(data);
+			var cell = "<ul class='pushTest'>";
+			for(var i = 0; i < result.length; i++){
+				cell += "<li class='ptCell btn btn-danger' id='pt" + result[i].push_id + "'>" + result[i].questionnaireName + result[i].patient_id +"</li>";
+			}
+			cell += "</ul>";
+//			alert(cell);
+			$(".ptDetails").eq(index).html(cell);
+		}
+	});
+}
+	</script>
+</html>
