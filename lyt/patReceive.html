@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>patReceive</title>
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <!--<script type="text/javascript" src="heartText.js"></script>-->
+    <style>
+        .nav-bar{
+            margin: 10px auto;
+        }
+        .nav-bar div{
+            border: 1px solid #000;
+            text-align: center;
+            padding: 5px;
+        }
+        .tip::after{
+            content: '1';
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            border-radius: 8px;
+            background-color: red;
+            color: #fff;
+            position: absolute;
+            right: 5px;
+            top: -8px;
+        }
+        .msgM{
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            border-radius: 8px;
+            background-color: red;
+            color: #fff;
+            position: absolute;
+            right: 0;
+            top: -8px;
+        }
+        .unRead {
+            float: right;
+            background-color: #ffffff;
+            margin-top:2px;
+            border:1px solid orange;
+            color: orange;
+            border-radius: 5px;
+        }
+        .read {
+            float: right;
+            background-color: #ffffff;
+            margin-top:2px;
+            border:1px solid green;
+            color: green;
+            border-radius: 5px;
+        }
+        .qnList{
+            background-color: #ffffff;
+            margin-bottom: 2%;
+            border:1px solid #1b6d85;
+        }
+        .col-xs-3{
+            padding-right: 10px;
+        }
+    </style>
+</head>
+<body style="background-color:#eeeeee">
+    <div class="container">
+        <div class="row nav-bar">
+            <div class="col-xs-4 assignment">任务
+                <span class="tips"></span>
+            </div>
+            <div class="col-xs-4">XXXX</div>
+            <div class="col-xs-4">XXXX</div>
+        </div>
+    </div>
+    <div class="container Main">
+        <!--<div class="container qnList" onclick="intoTest('+result[i].push_id+')">-->
+            <!--<div class="row">-->
+                <!--<div class="col-xs-7" style="font-size: 18px;">调查表</div>-->
+                <!--<div class="col-xs-5"><button class="read">已填写</button></div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col-xs-3">请填写</div>-->
+                <!--<div class="col-xs-9 tableName">'+result[i].questionnaireName+'</div>-->
+            <!--</div>-->
+            <!--<div class="row">-->
+                <!--<div class="col-xs-3">医生叮嘱</div>-->
+                <!--<div class="col-xs-9 tableName">'+result[i].pushTime+'</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</body>
+<script>
+    var owner = "17816869781";
+    var count = 0;
+    //加载时查看未读信息
+    if(typeof GoEasy !== 'undefined'){
+        var goEasy = new GoEasy({
+            appkey: '8371993d-59bf-4ef0-96bd-9e9416853d13',
+            userId:"222",
+            username:"22",
+            onConnected:function(){
+                console.log("Connect to GoEasy success.");
+            } ,
+            onDisconnected:function(){
+                console.log("Disconnect to GoEasy server.");
+            } ,
+            onConnectFailed:function(error){
+                console.log("Connect to GoEasy failed, error code: "+ error.code+" Error message: "+ error.content);
+            }
+        });
+    }
+    subscribe();
+    function subscribe(){
+        goEasy.subscribe({
+            channel: owner,
+            onMessage: function(message){
+                count++;
+                //用伪元素实现好像无法修改content
+                $('.tips').text(count);
+                $('.tips').addClass('msgM');
+                console.log(message.content);
+                codecell+='<div class="container qnList" onclick="intoTest('+result[i].push_id+')"><div class="row"><div class="col-xs-7" style="font-size: 18px;">调查表</div> <div class="col-xs-5"><button class="unRead">待填写</button></div></div><div class="row"> <div class="col-xs-3">请填写</div> <div class="col-xs-9 tableName">'+result[i].questionnaireName+'</div> </div> <div class="row"> <div class="col-xs-3">发布时间</div> <div class="col-xs-9 tableName">'+result[i].pushTime+'</div> </div> </div>';
+            },
+            onSuccess:function(){
+                console.log("Subscribe the Channel successfully.");
+            },
+            onFailed: function(error){
+                console.log("Subscribe the Channel failed, error code: "+ error.code + " error message: "+ error.content);
+            }
+        });
+    }
+   $(showMessages);
+    var codecell;
+    function showMessages(){
+        $.ajax({
+            url: 'php/patMessage.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {ownerId: owner},
+            success:function(data) {
+                //alert(data);
+                // 对所获得的json数据进行解析
+                var result = eval(data);
+                for(var i=0;i<result.length;i++){
+                    if(result[i].is_read==0) {
+                        count++;
+                        $('.tips').text(count);
+                        $('.tips').addClass('msgM');
+                    }
+                    if(result[i].finish_time=="0000-00-00"){
+                        codecell+='<div class="container qnList" onclick="intoTest('+result[i].send_id+')"><div class="row"><div class="col-xs-7" style="font-size: 18px;">调查表</div> <div class="col-xs-5"><button class="unRead">待填写</button></div></div><div class="row"> <div class="col-xs-3">请填写</div> <div class="col-xs-9 tableName">'+result[i].test_name+'</div> </div> <div class="row"> <div class="col-xs-3">发布时间</div> <div class="col-xs-9 tableName">'+result[i].send_time+'</div> </div> </div>';
+                    }else{
+                        codecell+='<div class="container qnList" onclick="intoTest('+result[i].send_id+')"><div class="row"><div class="col-xs-7" style="font-size: 18px;">调查表</div> <div class="col-xs-5"><button class="read">已填写</button></div></div><div class="row"> <div class="col-xs-3">请填写</div> <div class="col-xs-9 tableName">'+result[i].test_name+'</div> </div> <div class="row"> <div class="col-xs-3">发布时间</div> <div class="col-xs-9 tableName">'+result[i].send_time+'</div> </div> </div>';
+                    }
+                }
+                $(".Main").html(codecell);
+            }
+        });
+    }
+    function intoTest(val){
+        val = parseInt(val);
+        //gai wei yi du
+        $.ajax({
+            url: 'php/modifyReadStatus.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {send_id: val},
+            success:function(data) {
+            }
+        });
+        var url = "mainTest.html?index="+val;
+        window.open(url);
+    }
+</script>
+</html>
