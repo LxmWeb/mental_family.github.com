@@ -50,7 +50,7 @@ function build_relationship($doctorId, $patientId)
  */
 function patient_test($patientId){
     $sql = "select 
-                send_id,patient_id,patient_name,doctor_id,doctor_name,test_id,test_title,finish_time 
+                send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time 
             from test_send 
             where patient_id='$patientId'";
     //参数2表示从数据库中取出多条数据，1表示一条
@@ -129,7 +129,7 @@ function finish_test($recordId,$patientId,$sendId,$totalScore,$analysis,$score){
  */
 function select_relation($doctorId){
     $sql = "select * from relationship where doctor_id=$doctorId";
-    $result = get_datas($sql);
+    $result = get_datas($sql,0);
     return $result;
 }
 
@@ -157,7 +157,7 @@ function doctor_agree($doctorId, $patientId, $isAgree)
  */
 function show_patients($doctorId)
 {
-    $sql = "select patient_name,sex,birthday,main_suit from relationship where doctor_id='$doctorId'";
+    $sql = "select patient_id,patient_name,sex,birthday,main_suit from relationship where doctor_id='$doctorId'";
     return get_datas($sql,2);
 }
 
@@ -195,13 +195,15 @@ function send_test($doctorId,$doctorName,$id,$name,$testId){
  * @return boolean
  */
 function upload_test($doctorId,$json){
+//	echo $json;
     $testInfo = json_decode($json,true);
+//  echo $testInfo[0];
     //添加到系统库
     $sql = "insert into system_test (test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
-    values({$testInfo['test_type']},'{$testInfo['test_title']}','{$testInfo['test_source']}',
+    values({$testInfo['test_type']},'{$testInfo['test_title']}','$doctorId',
     now(),{$testInfo['question_index']},{$testInfo['question_amount']},
     '{$testInfo['content_before']}','{$testInfo['content_after']}')";
-    query($sql);
+//  query($sql);
     return insert_datas($sql);
 }
 
@@ -250,12 +252,12 @@ function test_result($doctorId, $patientId){
  */
 function show_mental_tests($doctor_id,$tag){
  	 if($tag == ""){
- 		 $sql = "select * from test_info where test_source='$doctor_id'";
+ 		 $sql = "select * from system_test where test_source='$doctor_id'";
  	 }
  	 else {
- 		 $sql = "select * from test_info where test_source='$doctor_id' and test_title like '%$tag%'";
+ 		 $sql = "select * from system_test where test_source='$doctor_id' and test_title like '%$tag%'";
  	 }
-     $data = get_datas($sql);
+     $data = get_datas($sql,2);
 	 return $data;
  }
 
