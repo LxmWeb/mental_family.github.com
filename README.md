@@ -3,6 +3,7 @@
 昨天晚上写的都没了，我也不写了；<br />
 1、send_test($doctorId,$doctorName,$id,$name,$testId)，参数问题，前端没有name这种东西，只有id，所以请提供找到name的这种东西；<br />
 2、show什么东西，id是最重要的，就算不显示出来也是要select出来的，放在元素的id里方便访问（如show_patients($doctorId)）；<br />
+3、patient_test($patientId) 显示所得分数；<br />
 <br />
 2017.5.1<br />
 1.重大修改finish_test方法<br />
