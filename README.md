@@ -1,4 +1,8 @@
 # mental_family.github.com
+2017.05.15<br />
+昨天晚上写的都没了，我也不写了；<br />
+1、send_test($doctorId,$doctorName,$id,$name,$testId)，参数问题，前端没有name这种东西，只有id，所以请提供找到name的这种东西；<br />
+<br />
 2017.5.1<br />
 1.重大修改finish_test方法<br />
 2.增加用户登录，注册，修改密码的方法<br />
