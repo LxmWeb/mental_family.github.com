@@ -6,25 +6,25 @@
 医生在添加系统量表时将原系统量表的id+自己的id进行添加记录；<br />
 修改upload_test函数：<br />
 ```
-function upload_test($doctorId,$json){<br />
-    $testInfo = json_decode($json,true);<br />
-    //添加到系统库<br />
+function upload_test($doctorId,$json){
+    $testInfo = json_decode($json,true);
+    //添加到系统库
     $sql = "insert into system_test (test_id,test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
     values({$testInfo['test_id']},{$testInfo['test_type']},'{$testInfo['test_title']}','$doctorId',
     now(),{$testInfo['question_index']},{$testInfo['question_amount']},
-    '{$testInfo['content_before']}','{$testInfo['content_after']}')";<br />
-    return insert_datas($sql);<br />
-}<br />
+    '{$testInfo['content_before']}','{$testInfo['content_after']}')";
+    return insert_datas($sql);
+}
 ```
 医生添加过的系统量表不能重复添加，到时候需要提醒；<br />
 2、需要能查看某个患者的某一套题的做题情况<br />
 //这是原来的查询患者所有套题的内容<br />
 ```
-function patient_test($patientId){<br />
-    $sql = "select send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time from test_send where patient_id='$patientId'";<br />
-    //参数2表示从数据库中取出多条数据，1表示一条<br />
-    return get_datas($sql,2);<br />
-}<br />
+function patient_test($patientId){
+    $sql = "select send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time from test_send where patient_id='$patientId'";
+    //参数2表示从数据库中取出多条数据，1表示一条
+    return get_datas($sql,2);
+}
 ```
 //某套题做题情况<br />
 2017.05.15<br />
