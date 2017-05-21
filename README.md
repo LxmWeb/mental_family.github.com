@@ -1,4 +1,32 @@
 # mental_family.github.com
+2017.05.21<br />
+1、量表数据库<br />
+量表id和拥有者的id作为双主键（test_id+test_source）；<br />
+添加量表部分：<br />
+医生在添加系统量表时将原系统量表的id+自己的id进行添加记录；<br />
+修改upload_test函数：<br />
+```
+function upload_test($doctorId,$json){<br />
+    $testInfo = json_decode($json,true);<br />
+    //添加到系统库<br />
+    $sql = "insert into system_test (test_id,test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
+    values({$testInfo['test_id']},{$testInfo['test_type']},'{$testInfo['test_title']}','$doctorId',
+    now(),{$testInfo['question_index']},{$testInfo['question_amount']},
+    '{$testInfo['content_before']}','{$testInfo['content_after']}')";<br />
+    return insert_datas($sql);<br />
+}<br />
+```
+医生添加过的系统量表不能重复添加，到时候需要提醒；<br />
+2、需要能查看某个患者的某一套题的做题情况<br />
+//这是原来的查询患者所有套题的内容<br />
+```
+function patient_test($patientId){<br />
+    $sql = "select send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time from test_send where patient_id='$patientId'";<br />
+    //参数2表示从数据库中取出多条数据，1表示一条<br />
+    return get_datas($sql,2);<br />
+}<br />
+```
+//某套题做题情况<br />
 2017.05.15<br />
 昨天晚上写的都没了，我也不写了；<br />
 1、show什么东西，id是最重要的，就算不显示出来也是要select出来的，放在元素的id里方便访问（如show_patients($doctorId)）；<br />
