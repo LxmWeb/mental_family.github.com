@@ -27,6 +27,16 @@ function patient_test($patientId){
 }
 ```
 //某套题做题情况<br />
+请添加这个函数<br/>
+3、查看随访病人应该时已经建立关系了的<br/>
+```
+function show_patients($doctorId){
+    $sql = "select patient_id,patient_name,sex,birthday,main_suit 
+            from relationship 
+            where doctor_id='$doctorId' and is_valid=1";
+    return get_datas($sql,2);
+}
+```
 2017.05.15<br />
 昨天晚上写的都没了，我也不写了；<br />
 1、show什么东西，id是最重要的，就算不显示出来也是要select出来的，放在元素的id里方便访问（如show_patients($doctorId)）；<br />
