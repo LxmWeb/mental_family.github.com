@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人主页</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <style>
+        .titlePart{
+            background-color: #2aabd2;
+        }
+        .titleText{
+            margin:2% 0;
+            font-size: 20px;
+            font-weight:bold;
+            color: #ffffff;
+            text-align: center;
+        }
+        #frame {
+            margin: 2% 0;
+            width:100%;
+            height:200px;
+            overflow: hidden;
+        }
+        #play{
+            width:500%;
+            height:200px;
+        }
+        img .image{
+            float: left;
+            padding:0;
+            margin:0;
+            z-index: 9;
+        }
+        .func {
+            /*margin: 2% 2% auto 2%;*/
+            width: 90%;
+            height:15vw;
+            line-height: 15vw;
+            border:1px solid #2AABD2;
+            background-color: #1B6D85;
+        }
+        .func_text {
+            font-size: 16px;
+            color: #FFFFFF;
+            text-align: center
+        }
+        .col-xs-4{
+            padding:0;
+            margin-top:2%;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid titlePart"style="background: url(img/login_bg.jpeg);">
+    <p class="titleText">个人主页</p>
+</div>
+<div class="container-fluid">
+    <div id="frame">
+        <div id="play">
+            <img class="image" id="img1" src="img/1.jpg" height="200" width="20%">
+            <img class="image" id="img2" src="img/2.jpg" height="200" width="20%">
+            <img class="image" id="img3" src="img/3.jpg" height="200" width="20%">
+            <img class="image" id="img4" src="img/4.jpg" height="200" width="20%">
+            <img class="image" id="img5" src="img/5.jpg" height="200" width="20%">
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4 ">
+            <div class="func" id="search_doctor">
+                <p class="func_text">搜索医生</p>
+            </div>
+        </div>
+        <div class="col-xs-4 ">
+            <div class="func" id="my_doctor">
+                <p class="func_text">我的医生</p>
+            </div>
+        </div>
+        <div class="col-xs-4 ">
+            <div class="func" id="my_focus">
+                <p class="func_text">我的记录</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4 ">
+            <div class="func" id="my_test">
+                <p class="func_text">我的测试</p>
+            </div>
+        </div>
+        <div class="col-xs-4 ">
+            <div class="func" id="my_record">
+                <p class="func_text">我的病例</p>
+            </div>
+        </div>
+        <div class="col-xs-4 ">
+            <div class="func" id="personal_page">
+                <p class="func_text">修改信息</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var user_id = localStorage.getItem("username");
+    $("#search_doctor").click(function () {
+        window.location.href = "docSearch.html";
+    });
+    $("#my_doctor").click(function (){
+        window.location.href = "";
+    });
+    $("#my_focus").click(function (){
+        window.location.href = "";
+    });
+    $("#my_test").click(function (){
+        window.location.href = "patReceive.html";
+    });
+    $("#my_record").click(function (){
+        window.location.href = "patRecords.html";
+    });
+    $("#personal_page").click(function (){
+        window.location.href = "personalPage.html";
+    });
+</script>
+</html>

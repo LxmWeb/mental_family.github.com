@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>mainTest</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap-slider/9.7.2/css/bootstrap-slider.css">
+    <link href="//cdn.bootcss.com/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <script type="text/javascript" src="//cdn.bootcss.com/bootstrap-slider/9.7.2/bootstrap-slider.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap-slider/9.7.2/bootstrap-slider.min.js"></script>
+    <!--<script type="text/javascript" src="heartText.js"></script>-->
+    <style>
+        .headline{
+            background-color: #63B8FF;
+            width: 100%;
+            height: 60px;
+            text-align: center;
+            vertical-align: baseline;
+            margin: 0;
+            line-height: 60px;
+            color: #fff;
+            padding-top: 0;
+        }
+        .headline>a{
+            color: #FFFFFF;
+        }
+        .questionnaireInto {
+            margin-top: 2%;
+            border: 2px dashed #8d8d8d;
+        }
+        .question {
+            margin: 2% auto 0 2%;
+            font-size: 16px;
+        }
+        .radioBtn {
+            margin: 0 auto 2% 2%;
+            font-size: 14px;
+        }
+        .submit {
+            width:80px;
+            border: 1px solid #63B8FF;
+            color: #63B8FF;
+            background-color: #FFFFFF;
+            border-radius: 5px;
+            margin: 2% 2% 2% auto;
+            float: right;
+            font-size: 16px;
+        }
+
+        .slider-handle.custom {
+            background: transparent none;
+            /* You can customize the handle and set a background image */
+        }
+
+        /* Or display content like unicode characters or fontawesome icons */
+        .slider-handle.custom::before {
+            line-height: 20px;
+            font-size: 20px;
+            content: '\2605'; /*unicode star character*/
+            color: #63B8FF;
+        }
+        .slider {
+            margin-left:2%;
+        }
+        /*#ex11Slider .slider-selection {*/
+            /*background: #BABABA;*/
+        /*}*/
+        .CurrentSliderValLabel {
+            margin-left:2%;
+            color:#63B8FF;
+        }
+        .questionnaireInto {
+            margin: 2% 2% auto 2%;
+        }
+        .tipContent{
+            position: absolute;
+            top:40%;
+            left:35%;
+            width:30vw;
+            height:7vh;
+            background-color: #63B8FF;
+            text-align: center;
+            line-height: 7vh;
+            border-radius: 4px;
+            color: #FFFFFF;
+        }
+    </style>
+    <!--<script src="heartText.js"></script>-->
+</head>
+<body>
+<div class="container-fluid headline"style="background: url(img/login_bg.jpeg);">
+    <a class="pull-left returnBtn" href="patReceive.html">返回</a>
+    心理健康调研
+</div>
+<div class="container questionnaireInto">
+    <!--<div class="row testLine">-->
+            <!--<p class="question">Q：请评价您此刻的心情</p>-->
+             <!--<input class="ss"  id="ex11" data-slider-id='ex11Slider' type="text" data-slider-handle="custom"/>-->
+             <!--<span class="CurrentSliderValLabel">当前值: <span id="SliderVal">4</span></span>-->
+    <!--</div>-->
+</div>
+<div class="container bottom">
+    <button class="submit">提交</button>
+</div>
+<div class="tipContent">结果已提交</div>
+</body>
+<script>
+//    var user_id = "17816869781";
+    var user_id = localStorage.getItem("username");
+    var code1cell;
+    var e_id=[],s_id=[],ans=[],choose=[];
+    intoTest();
+    $(".tipContent").hide();
+    function intoTest(){
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var showvar = getval.split("=")[1];
+        //alert(showvar);
+        $.ajax({
+            url: 'php/showQues.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {push_id: showvar},
+            success:function(data) {
+//                alert(data);
+                // 对所获得的json数据进行解析
+                var result = eval(data);
+                for(var i=0;i<result.length;i++){
+                    code1cell+='<div class="row testLine"><p class="question">Q'+(i+1)+':'+result[i].question_content+'</p>';
+                    code1cell+='<input class="ss" id="ex'+i+'" type="text" data-slider-handle="custom"/> <span class="CurrentSliderValLabel">当前值: <p style="display: inline-block" class="s" id="sliderVal'+i+'">'+result[i].question_grade+'</p></span>';
+                    code1cell+='</div>';
+                    e_id[i]="#ex"+i;
+                    s_id[i]="#sliderVal"+i;
+                    ans[i]=result[i].question_grade;
+;                }
+                $(".questionnaireInto").html(code1cell);
+
+                for(var i=0;i<e_id.length;i++){
+                    $(e_id[i]).slider({step: 1, min: 1, max: ans[i]});
+                }
+                $(".ss").on("slide", function(sliderValue) {
+                    $(".s").eq($(".ss").index(this)).text(sliderValue.value);
+                });
+            }
+        });
+    }
+
+    $(".submit").click(function () {
+        var sum=0;
+        var scores = [];
+        for(var i=0;i<e_id.length;i++){
+            scores[i]=parseInt($(".s").eq(i).text());
+            sum+=parseInt($(".s").eq(i).text());
+        }
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var showvar = getval.split("=")[1];
+//        alert(showvar+" "+sum);
+        $.ajax({
+            url: 'php/sendResult.php',
+            type: 'POST',
+            //dataType: 'json',
+            data: {patient_id:user_id,send_id: showvar,score:sum,scores:scores},
+            success: function (data) {
+                $(".tipContent").text("结果已提交");
+                $(".tipContent").show();
+                setTimeout(function () {
+                    $(".tipContent").hide();
+                },1000);
+            },
+            error: function () {
+                $(".tipContent").text("提交失败");
+                $(".tipContent").show();
+                setTimeout(function () {
+                    $(".tipContent").hide();
+                },1000);
+            }
+        });
+//        var url = "patReceive.html?index="+showvar+"";
+//        window.location.href = url;
+    });
+</script>
+</html>

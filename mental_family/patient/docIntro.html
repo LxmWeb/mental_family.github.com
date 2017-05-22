@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医生简介</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon"  href="http://eduppp.cn/images/logo4.gif" />
+    <link rel="apple-touch-icon" href="http://eduppp.cn/images/logo.gif" />
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <style>
+        .headline{
+            background-color: #63B8FF;
+            width: 100%;
+            height: 60px;
+            text-align: center;
+            vertical-align: baseline;
+            margin: 0;
+            line-height: 60px;
+            color: #fff;
+            padding-top: 0;
+            font-size:23px;
+        }
+        .bottomPart{
+            background-color: #dddddd;
+            border-top:1px solid lightgray;
+            position: fixed;
+            bottom:0;
+            width:100%;
+        }
+        .reqBtn {
+            float: right;
+            /*margin-right: 10px;*/
+            width:100px;
+            height:30px;
+            font-size: 16px;
+            border: 1px solid #2aabd2;
+            background-color: #ffffff;
+            color: #2aabd2;
+        }
+        .msgBtn {
+            float: right;
+            width:100px;
+            height:30px;
+            font-size: 16px;
+            border: 1px solid #2aabd2;
+            background-color: #2aabd2;
+            color: #ffffff;
+        }
+        .userImg {
+            width:60px;
+            height:60px;
+            background-color: #1b6d85;
+            border-radius: 30px;
+            margin-top: 10%;
+        }
+        .tipContent{
+            position: absolute;
+            top:40%;
+            left:35%;
+            width:30vw;
+            height:7vh;
+            background-color: #63B8FF;
+            text-align: center;
+            line-height: 7vh;
+            border-radius: 4px;
+            color: #FFFFFF;
+        }
+        .commentList{
+            width:100%;
+            height:45vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin:0;
+        }
+        .commentList::-webkit-scrollbar {
+            display: none;
+        }
+        .headline> a{
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid headline" style="background: url(img/login_bg.jpeg);">
+    <a class="pull-left returnBtn" href="docSearch.html">返回</a>
+    个人简介
+</div>
+<div class="container-fluid">
+    <div class="row" style="border-bottom: 1px solid lightgray;">
+        <div class="col-xs-3" style="margin:2% 0;">
+            <img class="userImg" src="img/head_img.jpg"/>
+        </div>
+        <div class="col-xs-9">
+            <p style="margin-left: 10px;font-size: 18px;font-weight: bold;margin-top: 20px;color: #A0522D">
+                <span class="doctorName">医生姓名</span>  &nbsp&nbsp&nbsp
+                <span style="font-size: 14px;color: black;">副主任医师</span>
+            </p>
+            <p class="docterHospitol" style="margin-left: 10px;font-size: 13px;">所属医院&nbsp 所属科系</p>
+        </div>
+    </div>
+    <div class="row" style="border-bottom: 1px solid lightgray;background: #f7f6f2;">
+        <p style="margin-left:5%;font-size: 14px;font-weight: bold; display: inline-block;">擅长: </p>
+        <p class="doctorTags" style="margin: 2% 2% 2% 2%;font-size: 14px;display: inline-block;"></p>
+    </div>
+    <div class="row" style="border-bottom: 1px solid lightgray;">
+        <p style="margin-left:5%;margin-top: 2%; font-size: 14px;font-weight: bold; display: inline-block;">详细介绍: </p>
+        <p class="doctorTags" style="margin: 2% 2% 2% 2%;font-size: 14px;display: inline-block;word-break: break-all;"></p>
+    </div>
+    <div class="row" style="border-bottom: 1px solid lightgray;background: #f7f6f2;">
+        <p style="margin: 2% 2% 2% 5%;font-size: 14px;font-weight: bold;">诊疗人数：<span class="allPeople" style="font-weight: 100;">xxx</span></p>
+        <p style="margin: 2% 2% 2% 5%;font-size: 14px;font-weight: bold;">当前随访数：<span class="nowPeople" style="font-weight: 100;">xxx</span></p>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-xs-3" style="height: 35px;border-top: 1px solid gray;background: lightgray;padding-top: 5px;">患者评价</div>
+        <div class="col-xs-9" style="height: 35px;border-left: 1px solid gray;border-bottom: 1px solid gray;"></div>
+    </div>
+    <div class="commentList row">
+        <div class="patient_comments" style="border:1px solid lightgray;margin-top: 5px;" >
+            <div class="row">
+                <div class="col-xs-2">
+                    <img style="width: 35px;height: 35px;" src="img/doc_photo.jpg">
+                </div>
+                <div class="col-xs-10">
+                    <p style="font-size: 10px;margin-bottom: 0px;">患者：XXX</p>
+                    <p style="font-size: 10px;">所患疾病：XXXXX</p>
+                </div>
+            </div>
+            <p>评价：XXXXXXXXX</p>
+        </div>
+    </div>
+</div>
+<div class="container-fluid bottomPart" style="background: url(img/login_bg.jpeg);">
+    <div class="row">
+            <button class="reqBtn">请求随访</button>
+            <button class="msgBtn" onclick="">发送消息</button>
+    </div>
+</div>
+<div class="tipContent">请求已发送</div>
+</body>
+<script>
+    var user_id = localStorage.getItem("username");
+//    var user_id = "17816869781";
+    $(".tipContent").hide();
+    docIntro();
+    function docIntro() {
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+        id = parseInt(id);
+        $.ajax({
+            url:'php/doctorIntro.php',
+            type:'POST',
+            dataType:'json',
+            data: {doctor_id:id},
+            success:function(data) {
+                var result = eval(data);
+                if(result.length>0){
+                    //将信息填入已经打完框架的简介页面
+                    //$(".userImg").src = result[0].header;
+                    $(".doctorName").text(result[0][0].doctor_name);
+                    $(".docterHospitol").text(result[1][0].hospital_name);
+                    $(".doctorTags").text(result[0][0].treatment);
+                }
+            }
+        });
+    }
+    $('.reqBtn').click(function(){
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+        id = parseInt(id);
+        $.ajax({
+            url: 'php/requestRelation.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {doctor_id:id,patient_id:user_id},
+            success: function (data) {
+                $(".tipContent").text("请求已发送");
+                $(".tipContent").show();
+                setTimeout(function () {
+                    $(".tipContent").hide();
+                },1000);
+            },
+            error: function () {
+                $(".tipContent").text("请求失败");
+                $(".tipContent").show();
+                setTimeout(function () {
+                    $(".tipContent").hide();
+                },1000);
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>docSearch</title>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.goeasy.io/goeasy.js"></script>
+    <title>注册</title>
+</head>
+<style>
+    body{
+        background: url(img/login_bg.jpeg);
+        background-size: 100% 100%;
+        background-attachment: fixed;
+    }
+    .title{
+        text-align: center;
+        color: gray;
+    }
+</style>
+<body>
+    <div class="container-fluid">
+        <h3 class="title">用户注册</h3>
+        <div class="form-group row" style="margin-top: 50px;">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <input class="form-control eamil" type="text" placeholder="手机号" required autofocus name="userid"/>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <span id="checkUser" style="color: gray;"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <input class="form-control eamil" type="text" placeholder="用户名" required autofocus name="username"/>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <span id="checkUserName" style="color: gray;"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <input class="form-control required" type="password" placeholder="密码" required  name="password"/>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <span id="checkPwd" style="color: gray;"></span>
+            </div>
+        </div>
+        <div class="form-group row" >
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <input class="form-control required" type="password" placeholder="再输一遍密码" required name="password2"/>
+            </div>
+            <div class="col-xs-1"></div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <span id="checkPwd2" style="color: gray;"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-1"></div>
+            <div class="col-xs-10">
+                <input type="radio" name="usertype" id="usertype1" value="1" checked>患者
+                <input type="radio" name="usertype" id="usertype2" value="2">医生
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="register" class="btn btn-success" style="background: #ffd147;outline-style: none;border: none;width: 60%;border-radius: 15px;padding: 8px;font-size: 16px;margin-left: 20%;margin-top: 15px;">注册</button>
+        </div>
+        <a href="login.html" id="goback" style="color:gray;margin-left: 42%;">返回登录</a>
+    </div>
+</body>
+<script>
+    var right_userid =0, right_password=0,right_username=0;
+//    判断手机号是否已被注册,是否合法。
+    $("input[name='userid']").blur(function () {
+        var userid = $("input[name='userid']").val();
+        if(userid==""){
+            right_userid=0;
+            $("#checkUser").text("手机号不能为空");
+        }else if (userid.length!=11||!isAllDigit(userid)) {
+            right_userid=0;
+            $("#checkUser").text("不合法的手机号");
+        }
+        else{
+            $.ajax({
+                url:"php/judgeUsername.php",
+                type: 'POST',
+                data: {userid: userid},
+                success:function(data) {
+                    if(data!="1"){
+                        right_userid=1;
+                        $("#checkUser").text("√");
+                    }else{
+                        right_userid=0;
+                        $("#checkUser").text("×");
+                    }
+                }
+            });
+        }
+    });
+
+    function isAllDigit(userid){
+        for(var i=0;i<userid.length;i++){
+            if(userid[i]>"9"&&userid<"0"){
+                return 0;
+            }
+        }
+        return 1;
+    }
+//    判断用户名是否为空
+    $("input[name='username']").blur(function () {
+        var username = $("input[name='username']").val();
+        if(username==""){
+            right_username=0;
+            $("#checkUserName").text("用户名不能为空");
+        }else{
+            right_username=1;
+            $("#checkUserName").text("√");
+        }
+    });
+//    判断两次密码是否相等
+    $("input[name='password2']").keyup(function () {
+        var password = $("input[name='password']").val();
+        var password2 = $("input[name='password2']").val();
+        if(password!=""){
+            if(password!=password2){
+                right_password = 0;
+                $("#checkPwd2").text("×");
+            }
+            else{
+                right_password = 1;
+                $("#checkPwd2").text("√");
+            }
+        }
+    });
+    $("input[name='password']").keyup(function () {
+        var password = $("input[name='password']").val();
+        var password2 = $("input[name='password2']").val();
+        if(password2!=""){
+            if(password!=password2){
+                right_password = 0;
+                $("#checkPwd2").text("×");
+            }
+            else{
+                right_password = 1;
+                $("#checkPwd2").text("√");
+            }
+        }
+    });
+
+    $("#register").click(function(){
+        var userid = $("input[name='userid']").val();
+        var username = $("input[name='username']").val();
+        var password = $("input[name='password']").val();
+        var usertype = $("input[name='usertype']:checked").val();
+        if(right_userid==1&&right_password==1&&right_username==1){
+            $.ajax({
+                url:"php/register.php",
+                type: 'POST',
+                data: {userid:userid,username:username,password:password,usertype:usertype},
+                success:function(data) {
+                    alert(data);
+                }
+            });
+        }else{
+            if(right_userid==0) alert("输入合法的手机号");
+            else if(right_username==0) alert("用户名不能为空");
+            else alert("请输入正确的密码");
+        }
+    });
+</script>
+</html>
