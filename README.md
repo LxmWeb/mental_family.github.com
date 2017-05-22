@@ -27,6 +27,16 @@ function patient_test($patientId){
 }
 ```
 //某套题做题情况<br />
+```
+function patient_send_test($sendid){
+    $sql = "select 
+                send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time,score 
+            from test_send 
+            where send_id='$sendid'";
+    //参数2表示从数据库中取出多条数据，1表示一条
+    return get_datas($sql,1);
+}
+```
 请添加这个函数<br/>
 3、查看随访病人应该时已经建立关系了的<br/>
 ```
