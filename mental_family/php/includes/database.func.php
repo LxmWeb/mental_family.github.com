@@ -110,8 +110,8 @@ function get_array($sql){
 
 /**
  * 获取一条记录
- * @param unknown $sql
- * @return multitype:
+ * @param String $sql
+ * @return null/array 返回null表示没有数据，否则返回一个数组
  */
 function get_row($sql){
     $result = query($sql);
@@ -128,10 +128,17 @@ function get_row($sql){
  */
 function mysql_string($string){
     //默认是开启的
-    if(GPC){
-        return $string;
+    //get_magic_quotes_gpc()如果开启状态，那么就不需要转义
+    if (!GPC) {
+        if (is_array($string)) {
+            foreach ($string as $_key => $_value) {
+                $_string[$_key] = mysql_string($_value);   //这里采用了递归，如果不理解，那么还是用htmlspecialchars
+            }
+        } else {
+            $_string = mysqli_real_escape_string($_string);
+        }
     }
-    return mysql_real_escape_string($string);
+    return $_string;
 }
 
 /**

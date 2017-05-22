@@ -12,6 +12,7 @@ if (! defined('IN_TG')) {
 }
 //跨域访问
 header('Access-Control-Allow-Origin:*');
+
 /*
  * 搜索
  */
@@ -44,8 +45,11 @@ function search_doctor($type,$keyword){
  */
 function is_relative($doctorId, $patientId)
 {
-    $sql = "select * from relationship where patient_id=$patientId and doctor_id=$doctorId and is_valid=1 limit 1";
-    $result = get_datas($sql);
+    $sql = "select * 
+            from relationship 
+            where patient_id=$patientId and doctor_id=$doctorId and is_valid=1 
+            limit 1";
+    $result = get_row($sql);
     if ($result == null) {
         return false;
     } else {
@@ -61,8 +65,8 @@ function is_relative($doctorId, $patientId)
  */
 function show_patient_info($doctorId,$patientId){
     if(is_relative($doctorId, $patientId)){
-        $sql = "select * from patient";
-        return get_datas($sql);
+        $sql = "select * from patient where patient_id=$patientId limit 1";
+        return get_datas($sql,1);
     }else {
         return '对不起，您无权查看该用户信息';
     }
@@ -75,10 +79,57 @@ function show_patient_info($doctorId,$patientId){
  * @param string $doctorId
  */
 function show_doctor_info($doctorId){
-    $sql = "select * from doctor";
-    return get_datas($sql);
+    $sql = "select * from doctor where doctor_id=$doctorId limit 1";
+    return get_datas($sql,1);
 }
 
+/**
+ * 功能：获得医生的当前随访人数
+ * @param String $doctorId
+ * @return int: 返回随访人数
+ */
+function count_current_patient($doctorId){
+    $sql = "select count(*) as count
+            from relationship 
+            where doctor_id='$doctorId'";
+    $row = get_row($sql);
+    return $row['count'];
+}
+
+/**
+ * 功能：修改医生的总病人数
+ * @param String $doctorId
+ * @return 是否成功修改
+ */
+function modify_total_patient($doctorId){
+    $sql = "update doctor 
+            set total_patient= total_patient+1
+            where doctor_id='$doctorId'";
+    return insert_datas($sql);
+}
+
+/**
+ * 功能：修改医生的当前随访 病人数
+ * @param String $doctorId
+ * @param int $num 1表示增加，-1表示减少（建立随访关系，解除随访关系）
+ * @return 是否成功修改
+ */
+function modify_current_patient($doctorId,$num){
+    $sql = "update doctor
+            set current_patient= current_patient + $num 
+            where doctor_id='$doctorId'";
+    return insert_datas($sql);
+}
+
+/**
+ * 功能：查看医院信息
+ * @param String $hospitalId
+ * @return Ambigous <NULL, string, multitype:>
+ */
+function show_hospital_info($hospitalId){
+    $sql = "select * from hospital where hospital_id=$hospitalId limit 1";
+    return get_datas($sql,1);
+}
 
 /*
  * 检查
@@ -120,6 +171,27 @@ function check_password($pwd,$minLength){
     return sha1($pwd);
 }
 
+/**
+ * 功能：检查用户的唯一标识符，防止注册攻击
+ * @param string $cookieUniqid cookie中的唯一标识符
+ * @return string
+ */
+function check_user($cookieUniqid){
+    $sql = "select uniqid
+            from user
+            where user_name='$cookieUniqid'
+            limit 1";
+    $row = get_row($sql);
+    if ($row!=null) {
+        if($row['uniqid']!=$cookieUniqid){
+            return '唯一标识符异常';
+        }else{
+            return '唯一标识符合法';
+        }
+    } else {
+        return '非法登录';
+    }
+}
 
 /*
  * 转化
@@ -151,8 +223,8 @@ function string_to_array($string){
 }
 
 /**
- * 
- * @param unknown $string
+ * 功能：对html转义
+ * @param String $string
  * @return string
  */
 function html($string) {
@@ -166,8 +238,6 @@ function html($string) {
     return $string;
 }
 
-
-
 /**
  * 对内容进行加密
  * @param unknown $string
@@ -175,5 +245,12 @@ function html($string) {
  */
 function encryption($string){
     return sha1($string);
+}
+
+/**
+ * 功能：生成唯一标识符
+ */
+function create_uniqid() {
+    return mysql_string(sha1(uniqid(rand(),true)));
 }
 ?>

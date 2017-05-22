@@ -30,14 +30,17 @@ function build_relationship($doctorId, $patientId)
         return false;
     } else {
         $valid = 0;
-        $array = get_row("select patient_name,sex,birthday,main_suit
-            from patient where patient_id='$patientId'");
+        $array = get_row("select 
+                              patient_name,sex,birthday,main_suit
+                          from patient 
+                          where patient_id='$patientId'");
         $patientName = $array['patient_name'];
         $sql = "insert into relationship
-        (patient_id,doctor_id,patient_name,sex,birthday,main_suit,build_time,is_valid)
-        values ('$patientId','$doctorId',
-        '{$array['patient_name']}','{$array['sex']}','{$array['birthday']}',
-        '{$array['main_suit']}',now(),'$valid')";
+                    (patient_id,doctor_id,patient_name,sex,birthday,
+                     main_suit,build_time,is_valid)
+                values ('$patientId','$doctorId', '{$array['patient_name']}',
+                        '{$array['sex']}','{$array['birthday']}',
+                        '{$array['main_suit']}',now(),'$valid')";
         return insert_datas($sql);
     }
 }
@@ -50,7 +53,7 @@ function build_relationship($doctorId, $patientId)
  */
 function patient_test($patientId){
     $sql = "select 
-                send_id,patient_id,patient_name,user_grade,doctor_id,doctor_name,test_id,test_title,finish_time 
+                send_id,patient_id,patient_name,doctor_id,doctor_name,test_id,test_title,finish_time 
             from test_send 
             where patient_id='$patientId'";
     //参数2表示从数据库中取出多条数据，1表示一条
@@ -63,7 +66,8 @@ function patient_test($patientId){
  * @return json
  */
 function show_test_details($test_id){
-    $sql = "select test_title,content_before,question_index,question_amount
+    $sql = "select 
+                test_title,content_before,question_index,question_amount
             from system_test
             where test_id='$test_id'
             limit 1";
@@ -127,14 +131,24 @@ function finish_test($recordId,$patientId,$sendId,$totalScore,$analysis,$score){
  * 功能：查询病人对医生发起的请求
  * @param $doctorId
  */
-function select_relation($doctorId){
-    $sql = "select * from relationship where doctor_id=$doctorId";
-    $result = get_datas($sql,0);
-    return $result;
+function select_relation($doctorId,$op){
+    //查看是否有新的请求<
+	if($op == 0){
+		$sql = "select * 
+		        from relationship 
+		        where doctor_id='$doctorId' and is_valid=0";
+	}
+	else{
+		$sql = "select * 
+		        from relationship 
+		        where doctor_id='$doctorId'";
+	}
+	$result = get_datas($sql);
+	return $result;
 }
 
 /**
- * 功能：医生对病人请求的应答
+ * 功能：医生对病人访请求的应答
  * 说明：如果同意，则将之前写入数据库的记录is_valid设为1
  * @param String $doctorId医生id
  * @param String $patientId病人ID
@@ -144,8 +158,14 @@ function select_relation($doctorId){
 function doctor_agree($doctorId, $patientId, $isAgree)
 {
     if ($isAgree) {
-        $sql = "update relationship set is_valid=1 where patient_id='$patientId' and doctor_id='$doctorId' limit 1";
-        return insert_datas($sql);
+        $sql = "update relationship 
+                set is_valid=1 
+                where patient_id='$patientId' and doctor_id='$doctorId'
+                limit 1";
+        $result = insert_datas($sql);
+        modify_total_patient($doctorId);
+        modify_current_patient($doctorId,1);
+        return $result;
     }
 }
 
@@ -157,7 +177,9 @@ function doctor_agree($doctorId, $patientId, $isAgree)
  */
 function show_patients($doctorId)
 {
-    $sql = "select patient_id,patient_name,sex,birthday,main_suit from relationship where doctor_id='$doctorId'";
+    $sql = "select patient_name,sex,birthday,main_suit 
+            from relationship 
+            where doctor_id='$doctorId'";
     return get_datas($sql,2);
 }
 
@@ -167,21 +189,20 @@ function show_patients($doctorId)
  * 病人id数组与病人姓名数组一一对应
  * @param string $doctorId
  * @param string $doctorName
- * @param json $patientId可能多个病人，传入一个json数据
- * @param json $patientName
+ * @param array $id可能多个病人，传入一个数组
+ * @param array $name
  * @param int $testId
  */
 function send_test($doctorId,$doctorName,$id,$name,$testId){
-    //加了true才会返回数组，否则返回对象
-    $patientId = json_decode($id,true);
-    $patientName = json_decode($name,true);
-    $sql = "select test_title from test_info where test_id = $testId";
+    $sql = "select test_title from system_test where test_id = '$testId'";
     $row = get_row($sql);
     $testTitle = $row['test_title'];
-    foreach($patientId as $key => $value){
+    foreach($id as $key => $value){
         $sql = "insert into test_send 
-                (patient_id,patient_name,doctor_name,test_id,test_name,user_grade,user_analysis,send_time,finish_time)
-                values('$value','$patientName[$key]','$doctorName',$testId,'$testTitle','',null,now(),''";
+                    (patient_id,patient_name,doctor_id,doctor_name,
+                     test_id,test_title,send_time)
+                values('$value','{$name[$key]}',$doctorId,'$doctorName',
+                        $testId,'$testTitle',now())";
         query($sql); 
     }
     /*需要对每一个病人是否发送成功进行判断？*/
@@ -195,15 +216,15 @@ function send_test($doctorId,$doctorName,$id,$name,$testId){
  * @return boolean
  */
 function upload_test($doctorId,$json){
-//	echo $json;
     $testInfo = json_decode($json,true);
-//  echo $testInfo[0];
     //添加到系统库
-    $sql = "insert into system_test (test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
-    values({$testInfo['test_type']},'{$testInfo['test_title']}','$doctorId',
-    now(),{$testInfo['question_index']},{$testInfo['question_amount']},
-    '{$testInfo['content_before']}','{$testInfo['content_after']}')";
-//  query($sql);
+    $sql = "insert into system_test 
+                (test_type,test_title,test_source,create_time,question_index,
+                 question_amount,content_before,content_after)
+            values({$testInfo['test_type']},'{$testInfo['test_title']}','{$testInfo['test_source']}',
+                    now(),{$testInfo['question_index']},{$testInfo['question_amount']},
+                    '{$testInfo['content_before']}','{$testInfo['content_after']}')";
+    query($sql);
     return insert_datas($sql);
 }
 
@@ -217,20 +238,38 @@ function query_test($testId){
 }
 
 /**
+ * 功能：检查医生是否已经添加该题库
+ * @param String $doctorId
+ * @param String $testId
+ */
+function check_test($doctorId,$testId){
+    $sql = "select * from doctor_test where test_id='$testId' and doctor_id='$doctorId' limit 1";
+    if(get_row($sql)==null){
+        return true;
+    }
+    return null;
+}
+
+/**
  * 功能：医生将系统库中的某个试题添加到自己的试题库中
  * @param String $doctorId
  * @param String $testId
- * @return boolean 是否插入成功
+ * @return boolean 是否插入成功 
+ *         null表示已经添加了该试题
  */
 function add_test($doctorId,$testId){
-    $row = query_test($testId);
-    //添加到系统库
-    $sql = "insert into doctor_test 
-                (test_id,test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
-            values({$row['test_id']},{$row['test_type']},'{$row['test_title']}','{$row['test_source']}',
-                '{$row['create_time']}',{$row['question_index']},{$row['question_amount']},
-                '{$row['content_before']}','{$row['Content_after']}')";
-    return insert_datas($sql);
+    $flag = check_test($doctorId, $testId);
+    if(flag){
+        $row = query_test($testId);
+        //添加到系统库
+        $sql = "insert into doctor_test 
+                    (test_id,test_type,test_title,test_source,create_time,question_index,question_amount,content_before,content_after)
+                values({$row['test_id']},{$row['test_type']},'{$row['test_title']}','{$row['test_source']}',
+                    '{$row['create_time']}',{$row['question_index']},{$row['question_amount']},
+                    '{$row['content_before']}','{$row['Content_after']}')";
+        return insert_datas($sql);
+    }
+    return null;
 }
 
 /**
@@ -252,12 +291,12 @@ function test_result($doctorId, $patientId){
  */
 function show_mental_tests($doctor_id,$tag){
  	 if($tag == ""){
- 		 $sql = "select * from system_test where test_source='$doctor_id'";
+ 		 $sql = "select * from test_info where test_source='$doctor_id'";
  	 }
  	 else {
- 		 $sql = "select * from system_test where test_source='$doctor_id' and test_title like '%$tag%'";
+ 		 $sql = "select * from test_info where test_source='$doctor_id' and test_title like '%$tag%'";
  	 }
-     $data = get_datas($sql,2);
+     $data = get_datas($sql);
 	 return $data;
  }
 

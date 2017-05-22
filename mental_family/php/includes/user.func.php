@@ -50,10 +50,12 @@ function user_register($json)
     $userInfo = json_decode($json, true);
 //     $username = check_username($userInfo['user_name'], 8, 16);
 //     $pwd = check_password($userInfo['user_password'], 6);
+    $uniqid = create_uniqid();
+    $pwd = encryption($userInfo['user_password']);
     $sql = "insert into user 
-                (user_id,user_password,user_name,user_status,register_time,last_login_time,last_login_ip)
-            values('{$userInfo['user_id']}','{$userInfo['user_password']}','{$userInfo['user_name']}',
-                   '{$userInfo['user_status']}',now(),now(),'')";
+                (user_id,user_password,user_name,user_status,uniqid,register_time,last_login_time,last_login_ip)
+            values('{$userInfo['user_id']}','$pwd','{$userInfo['user_name']}',
+                   '{$userInfo['user_status']}',$uniqid,now(),now(),'')";
     $flag = insert_datas($sql);
     // 病人
     if ($userInfo['user_status'] == 1) {
